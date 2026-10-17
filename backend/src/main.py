@@ -3,6 +3,8 @@ FastAPI Microservice for Inventory Compass.
 Serves forecasting models, replenishment recommendations, and model benchmarks.
 """
 
+import json
+from pathlib import Path
 from typing import Any, Dict, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -71,6 +73,15 @@ def get_model_metadata():
     if predictor is None:
         raise HTTPException(status_code=503, detail="Predictor not initialized")
     return predictor.metadata
+
+
+@app.get("/api/model/f1-metrics")
+def get_f1_metrics():
+    f1_path = Path(__file__).resolve().parent.parent / "reports" / "f1_metrics.json"
+    if not f1_path.exists():
+        raise HTTPException(status_code=404, detail="F1 metrics not generated yet")
+    with open(f1_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 @app.post("/api/predict")
