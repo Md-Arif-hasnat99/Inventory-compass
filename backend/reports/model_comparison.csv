@@ -1,0 +1,13 @@
+Model,MAE,RMSE,WAPE(%),Split,Train_s
+Naive (lag-1),121.771,156.137,89.074,Val,0.0
+Naive (lag-1),119.342,152.726,87.471,Test,0.0
+Seasonal Naive (lag-7),120.444,154.907,88.103,Val,0.0
+Seasonal Naive (lag-7),118.31,151.735,86.715,Test,0.0
+Linear Regression,68.745,88.016,50.286,Val,0.03
+Linear Regression,68.777,87.801,50.41,Test,0.03
+Random Forest,68.841,88.301,50.357,Val,14.28
+Random Forest,69.028,88.225,50.594,Test,14.28
+HistGradientBoosting,68.911,88.312,50.408,Val,0.4
+HistGradientBoosting,68.907,88.084,50.505,Test,0.4
+XGBoost,69.313,89.17,50.702,Val,1.57
+XGBoost,69.5,88.988,50.94,Test,1.57

@@ -1,4 +1,4 @@
-﻿# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
 #  Python
 # ─────────────────────────────────────────────
 __pycache__/
@@ -68,6 +68,7 @@ backend/models/*.pt
 backend/models/*.pth
 backend/models/*.onnx
 backend/models/*.bin
+backend/models/*.zip
 
 backend/data/raw/*
 backend/data/processed/*
