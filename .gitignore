@@ -1,0 +1,118 @@
+﻿# ─────────────────────────────────────────────
+#  Python
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.class
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# mypy / pyright
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+pyrightconfig.json
+
+# ─────────────────────────────────────────────
+#  Jupyter / IPython
+# ─────────────────────────────────────────────
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ─────────────────────────────────────────────
+#  ML / Data Science artefacts
+# ─────────────────────────────────────────────
+backend/models/*.pkl
+backend/models/*.joblib
+backend/models/*.h5
+backend/models/*.pt
+backend/models/*.pth
+backend/models/*.onnx
+backend/models/*.bin
+
+backend/data/raw/*
+backend/data/processed/*
+!backend/data/raw/.gitkeep
+!backend/data/processed/.gitkeep
+
+mlruns/
+mlflow.db
+
+# ─────────────────────────────────────────────
+#  Environment / secrets
+# ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# ─────────────────────────────────────────────
+#  Editors & OS
+# ─────────────────────────────────────────────
+.vscode/settings.json
+.vscode/*.code-snippets
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─────────────────────────────────────────────
+#  Logs & temp files
+# ─────────────────────────────────────────────
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+
+# ─────────────────────────────────────────────
+#  Node / Frontend (future)
+# ─────────────────────────────────────────────
+node_modules/
+.next/
+.nuxt/
+.output/
