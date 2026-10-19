@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ClipboardList,
+  Upload,
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -22,6 +23,7 @@ interface AppSidebarProps {
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { to: '/upload', label: 'Upload Data', icon: Upload, badge: 'NEW' },
   { to: '/forecast', label: 'Demand Forecast', icon: TrendingUp },
   { to: '/inventory', label: 'Inventory Management', icon: PackageCheck },
   { to: '/inventory/replenishment', label: 'Replenishment', icon: ClipboardList },

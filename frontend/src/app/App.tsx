@@ -10,11 +10,13 @@ import { ReplenishmentPage } from '../features/inventory/ReplenishmentPage';
 import { ProductsPage } from '../features/products/ProductsPage';
 import { ModelPerformancePage } from '../features/model-performance/ModelPerformancePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
+import { UploadPage } from '../features/upload/UploadPage';
 import { AppProviders } from './providers';
 
 const routeTitles: Record<string, string> = {
   '/': 'Overview Dashboard',
   '/dashboard': 'Overview Dashboard',
+  '/upload': 'Upload Your Data',
   '/forecast': 'Demand Forecasting',
   '/inventory': 'Inventory Management',
   '/inventory/replenishment': 'Replenishment Actions',
@@ -55,6 +57,7 @@ const AppLayout: React.FC = () => {
           <Routes>
             <Route path="/" element={<DashboardPage selectedStore={selectedStore} />} />
             <Route path="/dashboard" element={<DashboardPage selectedStore={selectedStore} />} />
+            <Route path="/upload" element={<UploadPage />} />
             <Route path="/forecast" element={<ForecastPage />} />
             <Route path="/inventory" element={<InventoryPage selectedStore={selectedStore} />} />
             <Route

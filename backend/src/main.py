@@ -1,16 +1,20 @@
 """
 FastAPI Microservice for Inventory Compass.
 Serves forecasting models, replenishment recommendations, and model benchmarks.
+Also provides the seller dataset upload, validation, and preview endpoints.
 """
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional
-from fastapi import FastAPI, HTTPException
+from typing import Any, Dict, List, Optional
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from backend.src.predict import InventoryPredictor
+from backend.src import upload as upload_store
+from backend.src.validation import validate_upload, COLUMN_ALIASES, REQUIRED_CANONICAL
+from backend.src.forecasting import generate_seller_forecast
 
 app = FastAPI(
     title="Inventory Compass API",
@@ -101,6 +105,221 @@ def predict_demand(req: PredictRequest):
         "isDemo": False,
         "data": decision,
     }
+
+
+
+# ---------------------------------------------------------------------------
+# Upload & Validation Endpoints
+# ---------------------------------------------------------------------------
+
+ALLOWED_CONTENT_TYPES = {"text/csv", "application/csv", "application/octet-stream", "text/plain"}
+MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
+
+
+class ColumnMappingRequest(BaseModel):
+    """Explicit column mapping override submitted by the seller UI."""
+    mapping: Dict[str, str]  # {canonical_name: seller_header}
+
+
+@app.get("/api/upload/schema")
+def get_upload_schema():
+    """Return accepted column aliases for the seller column-mapping UI."""
+    return {
+        "required_canonical_columns": sorted(REQUIRED_CANONICAL),
+        "optional_canonical_columns": sorted(
+            set(COLUMN_ALIASES.keys()) - REQUIRED_CANONICAL
+        ),
+        "accepted_aliases": COLUMN_ALIASES,
+    }
+
+
+@app.post("/api/upload", status_code=201)
+async def upload_dataset(file: UploadFile = File(...)):
+    """
+    Accept a seller CSV upload.
+    Returns upload_id, display filename, size, detected columns, and a 5-row preview.
+    Does NOT run full validation — call POST /api/upload/{upload_id}/validate for that.
+    """
+    # Content-type check (allow octet-stream since many browsers send it for .csv)
+    content_type = (file.content_type or "").split(";")[0].strip().lower()
+    if content_type and content_type not in ALLOWED_CONTENT_TYPES:
+        raise HTTPException(
+            status_code=415,
+            detail=(
+                f"Unsupported file type '{content_type}'. "
+                f"Please upload a CSV file (.csv)."
+            ),
+        )
+
+    # Filename extension check
+    original_name = file.filename or "upload.csv"
+    if not original_name.lower().endswith(".csv"):
+        raise HTTPException(
+            status_code=415,
+            detail="File must have a .csv extension.",
+        )
+
+    # Read and size check
+    file_bytes = await file.read()
+    if len(file_bytes) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+    if len(file_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=(
+                f"File size {len(file_bytes) / (1024*1024):.1f} MB exceeds "
+                f"the {MAX_UPLOAD_BYTES // (1024*1024)} MB limit."
+            ),
+        )
+
+    # Create session (writes temp file)
+    upload_id = upload_store.create_session(file_bytes, original_name)
+
+    # Run a quick column-detection pass (not full validation)
+    quick_result = validate_upload(file_bytes, original_name)
+    upload_store.update_session_validation(upload_id, quick_result)
+
+    session = upload_store.get_session(upload_id)
+    return {
+        "upload_id": upload_id,
+        "status": session["status"],
+        "display_filename": session["display_filename"],
+        "file_size_bytes": session["file_size_bytes"],
+        "row_count": session["row_count"],
+        "detected_columns": session["detected_columns"],
+        "canonical_mapping": session["canonical_mapping"],
+        "unmapped_columns": session["unmapped_columns"],
+        "date_range": session["date_range"],
+        "preview_rows": session["preview_rows"],
+        "validation_errors": session["validation_errors"],
+        "validation_warnings": session["validation_warnings"],
+    }
+
+
+@app.get("/api/upload/{upload_id}")
+def get_upload_session(upload_id: str):
+    """Return current state of an upload session."""
+    session = upload_store.get_session(upload_id)
+    if session is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Upload session '{upload_id}' not found or has expired.",
+        )
+    return session
+
+
+@app.post("/api/upload/{upload_id}/validate")
+def validate_upload_session(upload_id: str, body: Optional[ColumnMappingRequest] = None):
+    """
+    Run (or re-run) full validation on an uploaded dataset.
+    Optionally accepts a seller-supplied column mapping override.
+
+    Returns updated validation results including errors, warnings,
+    date range, and preview rows.
+    """
+    temp_path = upload_store.get_temp_path(upload_id)
+    if temp_path is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Upload session '{upload_id}' not found or has expired.",
+        )
+
+    file_bytes = temp_path.read_bytes()
+    explicit_mapping = body.mapping if body else None
+    result = validate_upload(file_bytes, str(temp_path.name), canonical_map=explicit_mapping)
+    upload_store.update_session_validation(upload_id, result)
+
+    return {
+        "upload_id": upload_id,
+        "status": result["status"],
+        "row_count": result["row_count"],
+        "detected_columns": result["detected_columns"],
+        "canonical_mapping": result["canonical_mapping"],
+        "unmapped_columns": result["unmapped_columns"],
+        "date_range": result["date_range"],
+        "preview_rows": result["preview_rows"],
+        "validation_errors": result["errors"],
+        "validation_warnings": result["warnings"],
+    }
+
+
+@app.get("/api/upload/{upload_id}/preview")
+def get_upload_preview(upload_id: str):
+    """Return 5-row preview and column info for an upload session."""
+    session = upload_store.get_session(upload_id)
+    if session is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Upload session '{upload_id}' not found or has expired.",
+        )
+    return {
+        "upload_id": upload_id,
+        "display_filename": session["display_filename"],
+        "row_count": session["row_count"],
+        "detected_columns": session["detected_columns"],
+        "canonical_mapping": session["canonical_mapping"],
+        "unmapped_columns": session["unmapped_columns"],
+        "preview_rows": session["preview_rows"],
+    }
+
+
+@app.delete("/api/upload/{upload_id}", status_code=204)
+def delete_upload_session(upload_id: str):
+    """Delete an upload session and its temporary file."""
+    deleted = upload_store.delete_session(upload_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Upload session '{upload_id}' not found.",
+        )
+
+
+# ---------------------------------------------------------------------------
+# Seller Forecasting Endpoints
+# ---------------------------------------------------------------------------
+
+class ForecastRequest(BaseModel):
+    """Parameters for generating multi-step demand forecast."""
+    horizon_days: int = Field(default=7, description="Forecast horizon in days (7, 14, or 30)")
+    model_preference: str = Field(default="auto", description="Strategy: auto, seller_trained, pretrained, baseline")
+    store_id: Optional[str] = Field(default=None, description="Optional Store ID filter")
+    product_id: Optional[str] = Field(default=None, description="Optional Product ID filter")
+
+
+@app.post("/api/forecast/{upload_id}")
+def create_forecast(upload_id: str, req: Optional[ForecastRequest] = None):
+    """
+    Generate multi-step demand forecast directly from a seller's uploaded dataset.
+    Predictions are generated recursively over 7, 14, or 30 days without data leakage.
+    """
+    body = req or ForecastRequest()
+    try:
+        result = generate_seller_forecast(
+            upload_id=upload_id,
+            horizon_days=body.horizon_days,
+            model_preference=body.model_preference,
+            store_id=body.store_id,
+            product_id=body.product_id,
+        )
+        return result
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Forecasting engine error: {str(exc)}")
+
+
+@app.get("/api/forecast/{upload_id}")
+def get_cached_forecast(upload_id: str):
+    """Return the cached forecast for an upload session, if already generated."""
+    cached = upload_store.get_session_forecast(upload_id)
+    if cached is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No forecast has been generated yet for upload session '{upload_id}'. Call POST /api/forecast/{upload_id} first.",
+        )
+    return cached
 
 
 if __name__ == "__main__":
