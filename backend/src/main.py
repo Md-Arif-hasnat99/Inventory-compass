@@ -15,6 +15,7 @@ from backend.src.predict import InventoryPredictor
 from backend.src import upload as upload_store
 from backend.src.validation import validate_upload, COLUMN_ALIASES, REQUIRED_CANONICAL
 from backend.src.forecasting import generate_seller_forecast
+from backend.src.replenishment import generate_batch_replenishment
 
 app = FastAPI(
     title="Inventory Compass API",
@@ -86,6 +87,33 @@ def get_f1_metrics():
         raise HTTPException(status_code=404, detail="F1 metrics not generated yet")
     with open(f1_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+@app.get("/api/model/benchmarks")
+def get_model_benchmarks():
+    csv_path = Path(__file__).resolve().parent.parent / "reports" / "model_comparison.csv"
+    if not csv_path.exists():
+        raise HTTPException(status_code=404, detail="Model comparison report not found")
+    import pandas as pd
+    df = pd.read_csv(csv_path)
+    df.columns = df.columns.str.strip()
+    benchmarks = []
+    for _, row in df.iterrows():
+        benchmarks.append({
+            "model": str(row["Model"]).strip(),
+            "modelName": str(row["Model"]).strip(),
+            "mae": float(row["MAE"]),
+            "rmse": float(row["RMSE"]),
+            "wape": float(row["WAPE(%)"]),
+            "valMae": float(row["MAE"]),
+            "valRmse": float(row["RMSE"]),
+            "valWape": float(row["WAPE(%)"]),
+            "split": str(row.get("Split", "Val")).strip(),
+            "trainTimeSec": float(row.get("Train_s", 0)),
+            "trainingTime": f"{float(row.get('Train_s', 0)):.2f}s",
+            "isChampion": "Linear Regression" in str(row["Model"]),
+        })
+    return benchmarks
 
 
 @app.post("/api/predict")
@@ -287,16 +315,22 @@ class ForecastRequest(BaseModel):
 
 
 @app.post("/api/forecast/{upload_id}")
-def create_forecast(upload_id: str, req: Optional[ForecastRequest] = None):
+def create_forecast(
+    upload_id: str,
+    horizon_days: Optional[int] = None,
+    req: Optional[ForecastRequest] = None,
+):
     """
     Generate multi-step demand forecast directly from a seller's uploaded dataset.
     Predictions are generated recursively over 7, 14, or 30 days without data leakage.
+    Supports params via JSON body or query string.
     """
     body = req or ForecastRequest()
+    eff_horizon = horizon_days if horizon_days is not None else body.horizon_days
     try:
         result = generate_seller_forecast(
             upload_id=upload_id,
-            horizon_days=body.horizon_days,
+            horizon_days=eff_horizon,
             model_preference=body.model_preference,
             store_id=body.store_id,
             product_id=body.product_id,
@@ -318,6 +352,66 @@ def get_cached_forecast(upload_id: str):
         raise HTTPException(
             status_code=404,
             detail=f"No forecast has been generated yet for upload session '{upload_id}'. Call POST /api/forecast/{upload_id} first.",
+        )
+    return cached
+
+
+# ---------------------------------------------------------------------------
+# Inventory Replenishment Endpoints
+# ---------------------------------------------------------------------------
+
+class ReplenishmentRequest(BaseModel):
+    """Parameters for generating inventory replenishment recommendations."""
+    lead_time_days: float = Field(default=3.0, description="Supplier lead time in days (>= 1.0)")
+    safety_stock_days: float = Field(default=2.0, description="Safety stock buffer in days (>= 0.0)")
+    horizon_days: int = Field(default=7, description="Forecast horizon in days (7, 14, or 30)")
+    inventory_overrides: Optional[Dict[str, float]] = Field(default=None, description="Optional per-SKU inventory overrides")
+
+
+@app.post("/api/replenishment/{upload_id}")
+def create_replenishment(
+    upload_id: str,
+    lead_time_days: Optional[float] = None,
+    safety_stock_days: Optional[float] = None,
+    horizon_days: Optional[int] = None,
+    req: Optional[ReplenishmentRequest] = None,
+):
+    """
+    Generate inventory replenishment recommendations for a seller upload session.
+    Calculates lead-time demand, safety stock, reorder points, stockout risk tiers,
+    and recommended integer reorder quantities.
+    Supports params via JSON body or query string.
+    """
+    body = req or ReplenishmentRequest()
+    eff_lead = lead_time_days if lead_time_days is not None else body.lead_time_days
+    eff_safety = safety_stock_days if safety_stock_days is not None else body.safety_stock_days
+    eff_horizon = horizon_days if horizon_days is not None else body.horizon_days
+
+    try:
+        result = generate_batch_replenishment(
+            upload_id=upload_id,
+            lead_time_days=eff_lead,
+            safety_stock_days=eff_safety,
+            horizon_days=eff_horizon,
+            inventory_overrides=body.inventory_overrides,
+        )
+        return result
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Replenishment error: {str(exc)}")
+
+
+@app.get("/api/replenishment/{upload_id}")
+def get_cached_replenishment(upload_id: str):
+    """Return the cached replenishment recommendations for an upload session, if already generated."""
+    cached = upload_store.get_session_replenishment(upload_id)
+    if cached is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No replenishment recommendations have been generated yet for session '{upload_id}'. Call POST /api/replenishment/{upload_id} first.",
         )
     return cached
 

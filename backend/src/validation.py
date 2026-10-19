@@ -16,18 +16,18 @@ import pandas as pd
 
 # Maps canonical internal name -> list of accepted seller header variants
 COLUMN_ALIASES: Dict[str, List[str]] = {
-    "date": ["Date", "date", "transaction_date", "sale_date", "order_date", "sales_date"],
+    "date": ["Date", "date", "transaction_date", "sale_date", "order_date", "sales_date", "SaleDate"],
     "units_sold": [
         "Units Sold", "units_sold", "sales", "quantity_sold", "demand",
-        "qty_sold", "units", "quantity", "qty", "UnitsSold",
+        "qty_sold", "units", "quantity", "qty", "UnitsSold", "QuantitySold",
     ],
-    "product_id": ["Product ID", "product_id", "ProductID", "SKU", "item_id", "sku"],
-    "store_id": ["Store ID", "store_id", "StoreID", "shop_id", "store", "location_id"],
+    "product_id": ["Product ID", "product_id", "ProductID", "SKU", "item_id", "sku", "ProductSKU"],
+    "store_id": ["Store ID", "store_id", "StoreID", "shop_id", "store", "location_id", "ShopID"],
     "inventory_level": [
         "Inventory Level", "inventory_level", "stock", "current_inventory",
-        "stock_level", "inventory", "on_hand", "onhand",
+        "stock_level", "inventory", "on_hand", "onhand", "InventoryOnHand",
     ],
-    "price": ["Price", "price", "unit_price", "selling_price"],
+    "price": ["Price", "price", "unit_price", "selling_price", "SellingPrice"],
     "discount": ["Discount", "discount", "discount_pct", "discount_percent", "disc"],
     "promotion": ["Holiday/Promotion", "promotion", "promo", "is_promo", "holiday", "is_holiday"],
     "category": ["Category", "category", "product_category", "dept", "department"],

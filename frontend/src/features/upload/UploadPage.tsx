@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Upload,
   FileText,
@@ -14,6 +15,7 @@ import {
 
 import { PageContainer } from '../../components/layout/PageContainer';
 import { uploadService } from '../../services/upload.service';
+import { useUploadContext } from '../../context/UploadContext';
 import type { UploadPageStep, UploadSession } from '../../types/upload';
 
 // ---------------------------------------------------------------------------
@@ -129,6 +131,8 @@ const ValidationBanner: React.FC<ValidationBannerProps> = ({ errors, warnings })
 // ---------------------------------------------------------------------------
 
 export const UploadPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { setActiveUploadId, loadForecast } = useUploadContext();
   const [step, setStep] = useState<UploadPageStep>('idle');
   const [session, setSession] = useState<UploadSession | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -611,16 +615,14 @@ export const UploadPage: React.FC = () => {
               </button>
               {session.status === 'valid' && (
                 <button
-                  className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-colors"
-                  onClick={() => {
-                    // Part 4 will wire this to the forecast page
-                    alert(
-                      `Upload ID: ${session.upload_id}\n\nDataset validated. ` +
-                        'Forecasting integration will be connected in Part 4.'
-                    );
+                  className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                  onClick={async () => {
+                    setActiveUploadId(session.upload_id);
+                    await loadForecast(7);
+                    navigate('/forecast');
                   }}
                 >
-                  Run Forecast
+                  Apply & Run Demand Forecast
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               )}

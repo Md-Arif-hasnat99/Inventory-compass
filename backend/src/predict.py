@@ -93,14 +93,15 @@ class InventoryPredictor:
         safety_stock = predicted_demand * safety_stock_days
         reorder_point = expected_lead_demand + safety_stock
 
+        import math
         if current_inventory < expected_lead_demand:
             risk = "HIGH"
             reorder_needed = True
-            reorder_qty = round(reorder_point - current_inventory)
+            reorder_qty = math.ceil(max(0.0, reorder_point - current_inventory))
         elif current_inventory < reorder_point:
             risk = "MEDIUM"
             reorder_needed = True
-            reorder_qty = round(reorder_point - current_inventory)
+            reorder_qty = math.ceil(max(0.0, reorder_point - current_inventory))
         else:
             risk = "LOW"
             reorder_needed = False

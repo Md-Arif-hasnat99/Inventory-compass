@@ -50,7 +50,6 @@ const AppLayout: React.FC = () => {
           selectedStore={selectedStore}
           onSelectStore={setSelectedStore}
           title={currentTitle}
-          isDemoMode={true}
         />
 
         <main className="flex-1 pb-16">

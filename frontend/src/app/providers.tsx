@@ -1,5 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { UploadProvider } from '../context/UploadContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,5 +16,9 @@ interface AppProvidersProps {
 }
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UploadProvider>{children}</UploadProvider>
+    </QueryClientProvider>
+  );
 };

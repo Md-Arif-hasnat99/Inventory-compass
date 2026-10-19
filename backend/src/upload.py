@@ -154,6 +154,25 @@ def get_session_forecast(upload_id: str) -> Optional[Dict[str, Any]]:
     return session.get("forecast_result")
 
 
+def store_session_replenishment(upload_id: str, replenishment_data: Dict[str, Any]) -> bool:
+    """Store the latest replenishment recommendations on the upload session."""
+    with _lock:
+        session = _sessions.get(upload_id)
+        if session is None:
+            return False
+        session["replenishment_result"] = replenishment_data
+    return True
+
+
+def get_session_replenishment(upload_id: str) -> Optional[Dict[str, Any]]:
+    """Get cached replenishment recommendations for an upload session."""
+    with _lock:
+        session = _sessions.get(upload_id)
+    if session is None:
+        return None
+    return session.get("replenishment_result")
+
+
 # ---------------------------------------------------------------------------
 # Internals
 # ---------------------------------------------------------------------------

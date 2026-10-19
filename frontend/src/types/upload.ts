@@ -45,3 +45,74 @@ export type UploadPageStep =
   | 'validating'   // Backend is re-validating with new mapping
   | 'done'         // Validation complete (valid or invalid)
   | 'error';       // Network or server error
+
+// Seller forecast response types
+export interface SellerForecastPrediction {
+  date: string;
+  store_id: string | null;
+  product_id: string | null;
+  predicted_demand: number;
+  is_baseline: boolean;
+}
+
+export interface SellerForecastMetrics {
+  mae?: number;
+  rmse?: number;
+  wape?: number;
+  r2?: number;
+  test_samples?: number;
+}
+
+export interface SellerForecastResponse {
+  upload_id: string;
+  status: 'success' | 'insufficient_data' | 'error';
+  model_type: string;
+  model_source: 'seller_trained' | 'pretrained_compatible' | 'baseline_heuristic' | 'none';
+  horizon_days: number;
+  forecast_dates: string[];
+  series_count: number;
+  total_predictions: number;
+  metrics: SellerForecastMetrics | null;
+  warnings: string[];
+  predictions: SellerForecastPrediction[];
+  errors?: string[];
+}
+
+// Seller replenishment response types
+export interface SellerReplenishmentItem {
+  store_id: string | null;
+  product_id: string | null;
+  daily_demand: number;
+  current_inventory: number;
+  units_on_order: number;
+  net_inventory: number;
+  lead_time_days: number;
+  safety_stock_days: number;
+  expected_lead_demand: number;
+  safety_stock: number;
+  reorder_point: number;
+  stockout_risk: 'HIGH' | 'MEDIUM' | 'LOW';
+  reorder_needed: boolean;
+  recommended_reorder_qty: number;
+  days_of_supply: number | null;
+}
+
+export interface SellerReplenishmentSummary {
+  total_skus: number;
+  high_risk_count: number;
+  medium_risk_count: number;
+  low_risk_count: number;
+  total_reorder_units: number;
+}
+
+export interface SellerReplenishmentResponse {
+  upload_id: string;
+  status: 'success' | 'warning' | 'error';
+  lead_time_days: number;
+  safety_stock_days: number;
+  horizon_days: number;
+  recommendations: SellerReplenishmentItem[];
+  summary: SellerReplenishmentSummary;
+  warnings: string[];
+  message?: string;
+}

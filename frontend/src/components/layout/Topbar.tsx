@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Menu, RefreshCw, Database, Sparkles, Building2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Menu, RefreshCw, Database, Sparkles, Building2, XCircle } from 'lucide-react';
 import { STORES } from '../../mocks/demo-data';
+import { useUploadContext } from '../../context/UploadContext';
 
 interface TopbarProps {
   onOpenMobileSidebar: () => void;
@@ -17,9 +19,9 @@ export const Topbar: React.FC<TopbarProps> = ({
   onSelectStore,
   onRefresh,
   title,
-  isDemoMode = true,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isRealData, activeSession, clearActiveUpload } = useUploadContext();
 
   const handleRefreshClick = () => {
     setIsRefreshing(true);
@@ -64,20 +66,35 @@ export const Topbar: React.FC<TopbarProps> = ({
           </select>
         </div>
 
-        {/* Demo Mode Badge */}
-        {isDemoMode ? (
-          <div
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium"
-            title="Frontend currently displays deterministic demo retail records while FastAPI service is standing by."
-          >
-            <Sparkles className="w-3 h-3 text-amber-600" />
-            <span>Demo Mode Active</span>
+        {/* Dataset Mode Badge */}
+        {isRealData && activeSession ? (
+          <div className="flex items-center gap-1.5">
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-medium"
+              title={`Active Seller Dataset: ${activeSession.display_filename} (${activeSession.row_count} rows)`}
+            >
+              <Database className="w-3 h-3 text-emerald-600" />
+              <span className="max-w-44 truncate">
+                Real: {activeSession.display_filename}
+              </span>
+            </div>
+            <button
+              onClick={clearActiveUpload}
+              className="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-slate-100"
+              title="Clear active upload and return to demo mode"
+            >
+              <XCircle className="w-3.5 h-3.5" />
+            </button>
           </div>
         ) : (
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-medium">
-            <Database className="w-3 h-3 text-emerald-600" />
-            <span>Connected: API v1</span>
-          </div>
+          <Link
+            to="/upload"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100 text-[11px] font-medium transition-colors"
+            title="Currently in Demo Mode. Click to upload your store dataset."
+          >
+            <Sparkles className="w-3 h-3 text-amber-600" />
+            <span>Demo Mode</span>
+          </Link>
         )}
 
         {/* Refresh button */}

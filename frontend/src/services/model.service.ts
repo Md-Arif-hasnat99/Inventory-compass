@@ -37,21 +37,57 @@ const FALLBACK_F1_METRICS: F1Metrics = {
 
 export const modelService = {
   async getBenchmarks(): Promise<ApiResponse<ModelBenchmark[]>> {
-    await new Promise((r) => setTimeout(r, 40));
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/model/benchmarks`);
+      if (res.ok) {
+        const json = await res.json();
+        return {
+          data: json,
+          isDemo: false,
+          status: 'success',
+          message: 'Validated using 70/15/15 chronological temporal holdout test.',
+        };
+      }
+    } catch {
+      // In offline mode
+    }
+
     return {
       data: REAL_MODEL_BENCHMARKS,
-      isDemo: false, // These are REAL evaluated metrics from backend training!
-      status: 'success',
-      message: 'Validated using 70/15/15 chronological temporal holdout test.',
+      isDemo: true,
+      status: 'fallback',
+      message: 'Using offline benchmark records.',
     };
   },
 
   async getMetadata(): Promise<ApiResponse<ModelMetadata>> {
-    await new Promise((r) => setTimeout(r, 40));
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/model/metadata`);
+      if (res.ok) {
+        const json = await res.json();
+        const meta: ModelMetadata = {
+          ...REAL_MODEL_METADATA,
+          modelType: json.model_type || REAL_MODEL_METADATA.modelType,
+          featureNames: json.feature_names || REAL_MODEL_METADATA.featureNames,
+          nFeatures: json.n_features || REAL_MODEL_METADATA.nFeatures,
+          trainRows: json.n_training_samples || REAL_MODEL_METADATA.trainRows,
+          valMae: json.metrics?.MAE || REAL_MODEL_METADATA.valMae,
+          valWape: json.metrics?.['WAPE(%)'] || REAL_MODEL_METADATA.valWape,
+        };
+        return {
+          data: meta,
+          isDemo: false,
+          status: 'success',
+        };
+      }
+    } catch {
+      // In offline mode
+    }
+
     return {
       data: REAL_MODEL_METADATA,
-      isDemo: false, // Real metadata from backend/models/model_metadata.json
-      status: 'success',
+      isDemo: true,
+      status: 'fallback',
     };
   },
 
@@ -67,14 +103,13 @@ export const modelService = {
         };
       }
     } catch {
-      // Fallback
+      // In offline mode
     }
 
     return {
       data: FALLBACK_F1_METRICS,
-      isDemo: false,
-      status: 'success',
+      isDemo: true,
+      status: 'fallback',
     };
   },
 };
-
