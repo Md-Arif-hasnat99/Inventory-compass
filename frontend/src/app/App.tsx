@@ -11,19 +11,6 @@ import { ModelEvaluationPage } from '../pages/ModelEvaluationPage';
 import { SettingsPage, NotFoundPage } from '../pages/SettingsPage';
 import { AppProviders } from './providers';
 
-const WorkspaceRoutes = () => (
-  <Routes>
-    <Route path="overview" element={<OverviewPage />} />
-    <Route path="upload" element={<UploadPage />} />
-    <Route path="forecasts" element={<ForecastPage />} />
-    <Route path="inventory" element={<ReplenishmentPage />} />
-    <Route path="replenishment" element={<ReplenishmentPage />} />
-    <Route path="evaluation" element={<ModelEvaluationPage />} />
-    <Route path="settings" element={<SettingsPage />} />
-    <Route path="*" element={<Navigate to="overview" replace />} />
-  </Routes>
-);
-
 export const App: React.FC = () => {
   const [selectedStore, setSelectedStore] = useState('ALL');
 
@@ -32,11 +19,23 @@ export const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/workspace/*">
-            <AppShell>
-              <WorkspaceRoutes />
-            </AppShell>
-          </Route>
+          <Route
+            path="/workspace/*"
+            element={
+              <AppShell>
+                <Routes>
+                  <Route path="overview" element={<OverviewPage />} />
+                  <Route path="upload" element={<UploadPage />} />
+                  <Route path="forecasts" element={<ForecastPage />} />
+                  <Route path="inventory" element={<ReplenishmentPage />} />
+                  <Route path="replenishment" element={<ReplenishmentPage />} />
+                  <Route path="evaluation" element={<ModelEvaluationPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                  <Route path="*" element={<Navigate to="overview" replace />} />
+                </Routes>
+              </AppShell>
+            }
+          />
           <Route path="/inventory" element={<Navigate to="/workspace/inventory" replace />} />
           <Route path="/forecast" element={<Navigate to="/workspace/forecasts" replace />} />
           <Route path="/upload" element={<Navigate to="/workspace/upload" replace />} />
