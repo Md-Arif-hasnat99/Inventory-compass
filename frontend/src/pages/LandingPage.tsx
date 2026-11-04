@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const navItems = [
@@ -25,10 +25,6 @@ const features = [
     description: 'Exact replenishment quantities to restore optimal stock levels.',
   },
   {
-    name: 'Forecast evaluation',
-    description: 'MAE, RMSE, WAPE, and R² metrics to understand forecasting quality.',
-  },
-  {
     name: 'CSV validation & mapping',
     description: 'Upload sales history, validate columns, and map headers to required fields.',
   },
@@ -41,6 +37,15 @@ const steps = [
 ];
 
 export const LandingPage: React.FC = () => {
+  const [hoverStat, setHoverStat] = useState<string | null>(null);
+
+  const stats = [
+    { label: 'SKUs tracked', value: '10,000+', color: '#2f6b4f' },
+    { label: 'Stores served', value: '500+', color: '#a86b16' },
+    { label: 'Forecast accuracy', value: '92%', color: '#2f6b4f' },
+    { label: 'Stockouts prevented', value: '12,000+', color: '#426b8c' },
+  ];
+
   return (
     <div className="min-h-screen bg-white text-[#202522]">
       {/* Header */}
@@ -90,28 +95,52 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 sm:py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#2f6b4f] mb-6">Retail inventory, made clear</p>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6">
-            Know what to stock. And when.
+          <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#e1e6e1] text-xs font-semibold text-[#2f6b4f] mb-6 inline-block transition-all hover:bg-[#e8f1eb] hover:border-[#2f6b4f]">
+            Retail inventory, made clear
+          </p>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-8 tracking-tight">
+            Know what to stock.<br className="hidden sm:block" /> And when.
           </h1>
           <p className="text-lg text-[#68716b] leading-relaxed mb-10 max-w-lg mx-auto">
             Turn your sales history into practical demand forecasts and replenishment recommendations —
             so you can plan stock with confidence.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/workspace" className="flex-1 sm:flex-none btn-primary sm:w-auto">
+            <Link to="/workspace" className="flex-1 sm:flex-none btn-primary sm:w-auto py-3 px-8 text-base">
               Explore the workspace
             </Link>
-            <a href="#" className="flex-1 sm:flex-none btn-quiet sm:w-auto">
+            <a href="#how-it-works" className="flex-1 sm:flex-none btn-quiet sm:w-auto py-3 px-8 text-base">
               See how it works
             </a>
           </div>
         </div>
+
+        {/* Interactive stat preview */}
+        <div className="mt-16 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {stats.map((stat) => (
+              <div
+                key={stat.label}
+                onMouseEnter={() => setHoverStat(stat.label)}
+                onMouseLeave={() => setHoverStat(null)}
+                className={`p-6 rounded-lg border border-[#e1e6e1] bg-white transition-all duration-200 hover:border-[#2f6b4f] hover:shadow-sm hover:-translate-y-1 ${
+                  hoverStat === stat.label ? 'bg-[#e8f1eb] border-[#2f6b4f] shadow-md' : ''
+                }`}
+              >
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-2xl font-bold text-[#202522] tabular-nums">{stat.value}</span>
+                  <span className="text-sm font-semibold text-[#2f6b4f]">+</span>
+                </div>
+                <p className="text-xs text-[#68716b] uppercase tracking-wider font-medium">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* Sample workspace preview */}
+      {/* Interactive workspace preview */}
       <section className="bg-[#f7f8f6] border-y border-[#e1e6e1] py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="text-center mb-16">
@@ -128,10 +157,10 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5">
+            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5 group">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#68716b] mb-3">Demand forecast</p>
-              <div className="h-32 bg-[#f1f3f0] rounded-md border border-[#e1e6e1] mb-3 flex items-center justify-center text-[#68716b] text-xs">
-                Chart preview
+              <div className="h-32 bg-[#f1f3f0] rounded-md border border-[#e1e6e1] mb-3 flex items-center justify-center text-[#68716b] text-xs group-hover:bg-[#e8f1eb] transition-colors duration-200">
+                <span>Interactive demand chart</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-[#202522]">14-day horizon</span>
@@ -139,10 +168,10 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5">
+            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5 group">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#68716b] mb-3">Stock risk</p>
               <div className="flex items-center gap-2 mb-3">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-medium bg-[#fbf3f3] border-[#e8c7c7] text-[#b54747]">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-medium bg-[#fbf3f3] border-[#e8c7c7] text-[#b54747] group-hover:bg-[#b54747] group-hover:text-white transition-colors duration-200">
                   3 products at risk
                 </span>
               </div>
@@ -153,9 +182,9 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5">
+            <div className="bg-white rounded-lg border border-[#e1e6e1] p-5 group">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#68716b] mb-3">Reorder suggestions</p>
-              <div className="bg-[#f1f3f0] rounded-md border border-[#e1e6e1] p-3 mb-3 font-mono text-xs text-[#68716b]">
+              <div className="bg-[#f1f3f0] rounded-md border border-[#e1e6e1] p-3 mb-3 font-mono text-xs text-[#68716b] group-hover:bg-[#e8f1eb] transition-colors duration-200">
                 P001 → Order 86 units<br />
                 P002 → Order 51 units
               </div>
@@ -238,8 +267,8 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((step) => (
-              <div key={step.number} className="bg-white rounded-lg border border-[#e1e6e1] p-6">
-                <div className="w-8 h-8 rounded-full border border-[#2f6b4f] bg-[#2f6b4f] text-white flex items-center justify-center text-xs font-bold mb-4">
+              <div key={step.number} className="bg-white rounded-lg border border-[#e1e6e1] p-6 group">
+                <div className="w-8 h-8 rounded-full border border-[#2f6b4f] bg-[#2f6b4f] text-white flex items-center justify-center text-xs font-bold mb-4 group-hover:scale-110 transition-transform duration-200">
                   {step.number}
                 </div>
                 <h3 className="text-base font-semibold mb-2">{step.title}</h3>
@@ -260,7 +289,7 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature) => (
-              <div key={feature.name} className="bg-white rounded-lg border border-[#e1e6e1] p-5">
+              <div key={feature.name} className="bg-white rounded-lg border border-[#e1e6e1] p-5 group hover:border-[#2f6b4f] transition-colors duration-200">
                 <h3 className="text-sm font-semibold mb-2">{feature.name}</h3>
                 <p className="text-sm text-[#68716b] leading-relaxed">{feature.description}</p>
               </div>

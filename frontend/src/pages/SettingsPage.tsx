@@ -1,9 +1,40 @@
 import React, { useState } from 'react';
-import { useUploadContext } from '../context/UploadContext';
 import { PageHeader, SectionHeader, Surface, Input, Select, Button } from '../components/ui';
 
+function PageHeader(props: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
+      <div>
+        <h2 className="text-lg font-semibold text-[#202522]">{props.title}</h2>
+        {props.subtitle && <p className="text-xs text-[#68716b] mt-0.5">{props.subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader(props: { title: string; subtitle?: string }) {
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <div>
+        <h3 className="text-sm font-semibold text-[#202522]">{props.title}</h3>
+        {props.subtitle && <p className="text-xs text-[#68716b] mt-0.5">{props.subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
+function Surface({ children, compact }: { children: React.ReactNode; compact?: boolean }) {
+  return (
+    <div className={`border border-[#e1e6e1] rounded-lg bg-white p-4 ${compact ? 'p-3' : ''}`}>
+      {children}
+    </div>
+  );
+}
+
 export const SettingsPage: React.FC = () => {
-  const { activeSession, clearActiveUpload } = useUploadContext();
   const [defaultHorizon, setDefaultHorizon] = useState('14');
   const [theme, setTheme] = useState<'light' | 'system'>('light');
   const [saved, setSaved] = useState(false);
@@ -23,32 +54,36 @@ export const SettingsPage: React.FC = () => {
       {/* Forecasting defaults */}
       <SectionHeader title="Forecasting parameters" />
       <Surface compact>
-        <Input
-          label="Default forecast horizon"
-          helper="Applied as the default window across forecasting graphs and replenishment calculations."
-        >
-          <select
-            value={defaultHorizon}
-            onChange={(e) => setDefaultHorizon(e.target.value)}
-            className="w-full h-10 rounded-md border border-[#e1e6e1] bg-white px-3 text-[#202522] focus:border-[#2f6b4f] focus:ring-1 focus:ring-[#e8f1eb]"
-          >
-            <option value="7">7 days ahead (weekly cycle)</option>
-            <option value="14">14 days ahead (standard MRP buffer)</option>
-            <option value="30">30 days ahead (monthly S&OP)</option>
-          </select>
-        </Input>
-        <div className="mt-4 pt-3 border-t border-[#e1e6e1]">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-semibold text-[#68716b] uppercase tracking-wider">
-              Target service level
-            </span>
-            <span className="text-xs text-[#202522] font-mono bg-[#f1f3f0] px-2 py-1 rounded border border-[#e1e6e1]">
-              95% service level (Z = 1.65)
-            </span>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#68716b] mb-1">
+              Default forecast horizon
+            </label>
+            <select
+              value={defaultHorizon}
+              onChange={(e) => setDefaultHorizon(e.target.value)}
+              className="w-full h-10 rounded-md border border-[#e1e6e1] bg-white px-3 text-[#202522] focus:border-[#2f6b4f] focus:ring-1 focus:ring-[#e8f1eb]"
+            >
+              <option value="7">7 days ahead (weekly cycle)</option>
+              <option value="14">14 days ahead (standard MRP buffer)</option>
+              <option value="30">30 days ahead (monthly S&OP)</option>
+            </select>
+            <p className="mt-1 text-[11px] text-[#68716b]">
+              Applied as the default window across forecasting graphs and replenishment calculations.
+            </p>
           </div>
-          <p className="text-xs text-[#68716b]">
-            Determines safety stock buffer size in reorder point recommendations.
-          </p>
+
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[#68716b] mb-1">
+              Target service level (safety stock Z-score)
+            </label>
+            <div className="text-[#202522] font-mono bg-[#f1f3f0] px-3 py-1.5 rounded-md inline-block border border-[#e1e6e1]">
+              95% service level (Z = 1.65)
+            </div>
+            <p className="mt-1 text-[11px] text-[#68716b]">
+              Determines safety stock buffer size in reorder point recommendations.
+            </p>
+          </div>
         </div>
       </Surface>
 
@@ -62,22 +97,12 @@ export const SettingsPage: React.FC = () => {
             </svg>
           </span>
           <div>
-            <p className="font-medium text-[#202522]">Current data source</p>
-            {activeSession ? (
-              <>
-                <p className="text-[#68716b]">{activeSession.display_filename}</p>
-                <p className="text-[10px] text-[#287a50] font-medium">Validated — {activeSession.row_count.toLocaleString()} rows</p>
-              </>
-            ) : (
-              <>
-                <p className="text-[#68716b]">Demo data</p>
-                <p className="text-[10px] text-[#a86b16] font-medium">Synthetic data for demonstration</p>
-              </>
-            )}
+            <p className="font-medium text-[#202522]">Demo data</p>
+            <p className="text-[10px] text-[#a86b16] font-medium">Synthetic data for demonstration</p>
           </div>
           <div className="ml-auto">
-            <Button variant="danger" size="sm" onClick={clearActiveUpload} disabled={!activeSession}>
-              Clear dataset
+            <Button variant="danger" size="sm">
+              Reset dataset
             </Button>
           </div>
         </div>
@@ -154,4 +179,4 @@ function NotFoundPage() {
   );
 }
 
-export { NotFoundPage };
+export { SettingsPage, NotFoundPage };

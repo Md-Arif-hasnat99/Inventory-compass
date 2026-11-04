@@ -7,7 +7,8 @@ import { OverviewPage } from '../pages/OverviewPage';
 import { UploadPage } from '../pages/UploadPage';
 import { ForecastPage } from '../pages/ForecastPage';
 import { ReplenishmentPage } from '../pages/ReplenishmentPage';
-import { ModelEvaluationPage } from '../pages/ModelEvaluationPage';
+import { ProductsPage } from '../features/products/ProductsPage';
+import { InventoryGuidePage } from '../features/guide/InventoryGuidePage';
 import { SettingsPage, NotFoundPage } from '../pages/SettingsPage';
 import { AppProviders } from './providers';
 
@@ -29,7 +30,8 @@ export const App: React.FC = () => {
                   <Route path="forecasts" element={<ForecastPage />} />
                   <Route path="inventory" element={<ReplenishmentPage />} />
                   <Route path="replenishment" element={<ReplenishmentPage />} />
-                  <Route path="evaluation" element={<ModelEvaluationPage />} />
+                  <Route path="products" element={<ProductsPage />} />
+                  <Route path="guide" element={<InventoryGuidePage />} />
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="*" element={<Navigate to="overview" replace />} />
                 </Routes>

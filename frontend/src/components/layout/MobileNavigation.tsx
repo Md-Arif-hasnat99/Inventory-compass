@@ -13,7 +13,8 @@ const mobileNavItems = [
   { to: '/workspace/forecasts', label: 'Forecasts', name: 'chart' },
   { to: '/workspace/inventory', label: 'Inventory', name: 'inventory' },
   { to: '/workspace/replenishment', label: 'Replenishment', name: 'inventory' },
-  { to: '/workspace/evaluation', label: 'Model evaluation', name: 'chart' },
+  { to: '/workspace/products', label: 'Products', name: 'inventory' },
+  { to: '/workspace/guide', label: 'Guide', name: 'book-open' },
   { to: '/workspace/settings', label: 'Settings', name: 'settings' },
 ];
 
