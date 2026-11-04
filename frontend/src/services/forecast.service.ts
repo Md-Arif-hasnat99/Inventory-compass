@@ -45,17 +45,4 @@ export const forecastService = {
 
     return res.json();
   },
-
-  /**
-   * Fetch already-generated cached forecast for an upload session.
-   */
-  async getCachedSellerForecast(uploadId: string): Promise<SellerForecastResponse | null> {
-    const res = await fetch(`${API_BASE_URL}/api/forecast/${uploadId}`);
-    if (res.status === 404) return null;
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: res.statusText }));
-      throw new Error(err.detail || `Failed to fetch cached forecast (${res.status})`);
-    }
-    return res.json();
-  },
 };

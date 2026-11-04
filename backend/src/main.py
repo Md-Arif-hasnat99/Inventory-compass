@@ -6,7 +6,7 @@ Also provides the seller dataset upload, validation, and preview endpoints.
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -32,26 +32,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Initialize predictor singleton
 try:
     predictor = InventoryPredictor()
 except Exception as e:
     predictor = None
     print(f"Warning: InventoryPredictor failed to initialize: {e}")
-
-
-class PredictRequest(BaseModel):
-    inventory_level: Optional[float] = Field(None, alias="Inventory Level")
-    price: Optional[float] = Field(None, alias="Price")
-    discount: Optional[float] = Field(None, alias="Discount")
-    holiday_promotion: Optional[int] = Field(None, alias="Holiday/Promotion")
-    competitor_pricing: Optional[float] = Field(None, alias="Competitor Pricing")
-    lead_time_days: Optional[float] = Field(1.0)
-    safety_stock_days: Optional[float] = Field(2.0)
-    features: Optional[Dict[str, Any]] = None
-
-    class Config:
-        populate_by_name = True
 
 
 @app.get("/")
@@ -116,26 +103,6 @@ def get_model_benchmarks():
     return benchmarks
 
 
-@app.post("/api/predict")
-def predict_demand(req: PredictRequest):
-    if predictor is None:
-        raise HTTPException(status_code=503, detail="Model is not loaded")
-
-    # Combine top-level fields and arbitrary features
-    payload = req.model_dump(by_alias=True, exclude_unset=True)
-    if "features" in payload and isinstance(payload["features"], dict):
-        payload.update(payload.pop("features"))
-
-    safety_days = float(payload.pop("safety_stock_days", 2.0))
-    decision = predictor.forecast_inventory_decision(payload, safety_stock_days=safety_days)
-    return {
-        "status": "success",
-        "isDemo": False,
-        "data": decision,
-    }
-
-
-
 # ---------------------------------------------------------------------------
 # Upload & Validation Endpoints
 # ---------------------------------------------------------------------------
@@ -147,18 +114,6 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
 class ColumnMappingRequest(BaseModel):
     """Explicit column mapping override submitted by the seller UI."""
     mapping: Dict[str, str]  # {canonical_name: seller_header}
-
-
-@app.get("/api/upload/schema")
-def get_upload_schema():
-    """Return accepted column aliases for the seller column-mapping UI."""
-    return {
-        "required_canonical_columns": sorted(REQUIRED_CANONICAL),
-        "optional_canonical_columns": sorted(
-            set(COLUMN_ALIASES.keys()) - REQUIRED_CANONICAL
-        ),
-        "accepted_aliases": COLUMN_ALIASES,
-    }
 
 
 @app.post("/api/upload", status_code=201)
@@ -269,37 +224,6 @@ def validate_upload_session(upload_id: str, body: Optional[ColumnMappingRequest]
         "validation_errors": result["errors"],
         "validation_warnings": result["warnings"],
     }
-
-
-@app.get("/api/upload/{upload_id}/preview")
-def get_upload_preview(upload_id: str):
-    """Return 5-row preview and column info for an upload session."""
-    session = upload_store.get_session(upload_id)
-    if session is None:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Upload session '{upload_id}' not found or has expired.",
-        )
-    return {
-        "upload_id": upload_id,
-        "display_filename": session["display_filename"],
-        "row_count": session["row_count"],
-        "detected_columns": session["detected_columns"],
-        "canonical_mapping": session["canonical_mapping"],
-        "unmapped_columns": session["unmapped_columns"],
-        "preview_rows": session["preview_rows"],
-    }
-
-
-@app.delete("/api/upload/{upload_id}", status_code=204)
-def delete_upload_session(upload_id: str):
-    """Delete an upload session and its temporary file."""
-    deleted = upload_store.delete_session(upload_id)
-    if not deleted:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Upload session '{upload_id}' not found.",
-        )
 
 
 # ---------------------------------------------------------------------------

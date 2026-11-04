@@ -14,10 +14,3 @@ export interface ForecastSummary {
   horizonDays: number;
   modelUsed: string;
 }
-
-export interface ForecastFilter {
-  productId: string;
-  storeId: string;
-  horizonDays: 7 | 14 | 30;
-  startDate?: string;
-}

@@ -14,8 +14,6 @@ import {
   ForecastSummary,
   InventoryItem,
   InventoryRiskDistribution,
-  ModelBenchmark,
-  ModelMetadata,
   ReplenishmentRecommendation,
   SalesDemandTrendPoint,
   TopProductRow,
@@ -353,43 +351,3 @@ export function generateProductForecast(
     },
   };
 }
-
-/**
- * Real Model Benchmarks and Metadata from our ML execution
- */
-export const REAL_MODEL_BENCHMARKS: ModelBenchmark[] = [
-  { modelName: 'Naive Baseline (lag-1)', mae: 121.77, rmse: 156.14, wape: 89.07, split: 'Val', trainTimeSec: 0.0, isChampion: false },
-  { modelName: 'Seasonal Naive (lag-7)', mae: 120.44, rmse: 154.91, wape: 88.10, split: 'Val', trainTimeSec: 0.0, isChampion: false },
-  { modelName: 'Linear Regression', mae: 68.75, rmse: 88.02, wape: 50.29, split: 'Val', trainTimeSec: 0.04, isChampion: true },
-  { modelName: 'Random Forest', mae: 68.84, rmse: 88.30, wape: 50.36, split: 'Val', trainTimeSec: 12.87, isChampion: false },
-  { modelName: 'HistGradientBoosting', mae: 68.91, rmse: 88.31, wape: 50.41, split: 'Val', trainTimeSec: 0.44, isChampion: false },
-  { modelName: 'XGBoost', mae: 69.31, rmse: 89.17, wape: 50.70, split: 'Val', trainTimeSec: 1.89, isChampion: false },
-];
-
-export const REAL_MODEL_METADATA: ModelMetadata = {
-  modelType: 'Linear Regression',
-  targetVariable: 'Units Sold',
-  forecastHorizon: '1 day ahead (t+1 recursive multi-step)',
-  featureNames: [
-    'day_of_week', 'day_of_month', 'month', 'week_of_year', 'is_weekend', 'quarter',
-    'lag_1', 'lag_7', 'lag_14', 'roll_mean_7', 'roll_mean_14', 'roll_mean_30', 'roll_std_7',
-    'store_enc', 'product_enc', 'category_enc', 'region_enc', 'weather_enc', 'season_enc',
-    'Price', 'Discount', 'Inventory Level', 'Holiday/Promotion', 'Competitor Pricing'
-  ],
-  nFeatures: 24,
-  trainingCutoffDate: '2023-05-27',
-  valCutoffDate: '2023-09-14',
-  trainRows: 50400,
-  valRows: 11000,
-  testRows: 11000,
-  valMae: 68.745,
-  valRmse: 88.016,
-  valWape: 50.286,
-  testMae: 68.777,
-  testRmse: 87.801,
-  testWape: 50.410,
-  dataset: 'retail_store_inventory.csv (73,000 rows across 5 stores & 20 products)',
-  datasetNote: 'Real benchmark computed via strict chronological split (70% train / 15% val / 15% test). Zero future data leakage.',
-  trainedAt: '2026-10-17T22:55:21',
-  excludedFeatures: ['Demand Forecast (unverified provenance & negative anomalies in raw data)'],
-};

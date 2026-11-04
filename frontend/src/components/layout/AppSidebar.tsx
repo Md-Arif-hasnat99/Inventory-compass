@@ -6,7 +6,7 @@ import {
   TrendingUp,
   PackageCheck,
   ShoppingBag,
-  Cpu,
+  BookOpen,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -28,7 +28,7 @@ const navItems = [
   { to: '/inventory', label: 'Inventory Management', icon: PackageCheck },
   { to: '/inventory/replenishment', label: 'Replenishment', icon: ClipboardList },
   { to: '/products', label: 'Products Catalog', icon: ShoppingBag },
-  { to: '/model-performance', label: 'Model Performance', icon: Cpu, badge: 'ML' },
+  { to: '/guide', label: 'Terms & Guide', icon: BookOpen, badge: 'GUIDE' },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -129,12 +129,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
             <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] font-medium text-slate-700">Model Engine Ready</span>
+                <span className="text-[11px] font-medium text-slate-700">Forecast Engine Online</span>
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">Linear Regression (MAE: 68.75)</p>
+              <p className="text-[10px] text-slate-500 mt-1">Autonomous Demand Intelligence</p>
             </div>
           ) : (
-            <div className="flex justify-center" title="Model: Linear Regression">
+            <div className="flex justify-center" title="Forecast Engine: Online">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             </div>
           )}
