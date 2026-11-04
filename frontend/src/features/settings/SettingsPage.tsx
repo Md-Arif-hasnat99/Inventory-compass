@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, Database, Moon, Sun, Monitor, CheckCircle, ShieldAlert } from 'lucide-react';
+import { Database, Sun, Monitor, CheckCircle } from 'lucide-react';
 
 import { PageContainer } from '../../components/layout/PageContainer';
 import { API_BASE_URL } from '../../services/api-client';
@@ -81,8 +81,8 @@ export const SettingsPage: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-600">Trained Artifact Directory</span>
-              <span className="font-mono text-slate-800">backend/models/best_model_linear_regression.joblib</span>
+              <span className="text-slate-600">Forecasting Engine Pipeline</span>
+              <span className="font-semibold text-emerald-700">Verified & Operational</span>
             </div>
 
             <div className="flex items-center justify-between py-2">

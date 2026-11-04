@@ -5,7 +5,7 @@
  */
 
 import { API_BASE_URL } from './api-client';
-import type { ColumnMappingOverride, UploadSchema, UploadSession } from '../types/upload';
+import type { ColumnMappingOverride, UploadSession } from '../types/upload';
 
 export const uploadService = {
   /**
@@ -65,19 +65,6 @@ export const uploadService = {
   },
 
   /**
-   * GET /api/upload/{uploadId}/preview
-   * Fetch 5-row preview and column info for a session.
-   */
-  async getPreview(uploadId: string): Promise<UploadSession> {
-    const res = await fetch(`${API_BASE_URL}/api/upload/${uploadId}/preview`);
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({ detail: res.statusText }));
-      throw new Error(body.detail ?? `Preview failed (HTTP ${res.status})`);
-    }
-    return res.json() as Promise<UploadSession>;
-  },
-
-  /**
    * DELETE /api/upload/{uploadId}
    * Remove an upload session and its temp file.
    */
@@ -89,17 +76,5 @@ export const uploadService = {
       const body = await res.json().catch(() => ({ detail: res.statusText }));
       throw new Error(body.detail ?? `Delete failed (HTTP ${res.status})`);
     }
-  },
-
-  /**
-   * GET /api/upload/schema
-   * Fetch the canonical column alias schema for building the mapping UI.
-   */
-  async getSchema(): Promise<UploadSchema> {
-    const res = await fetch(`${API_BASE_URL}/api/upload/schema`);
-    if (!res.ok) {
-      throw new Error(`Could not fetch column schema (HTTP ${res.status})`);
-    }
-    return res.json() as Promise<UploadSchema>;
   },
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ArrowRight, TrendingUp, Package, Tag } from 'lucide-react';
+import { Search, ArrowRight, Tag } from 'lucide-react';
 
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Badge } from '../../components/ui/Badge';

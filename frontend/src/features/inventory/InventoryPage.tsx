@@ -11,13 +11,13 @@ import {
   Calendar,
   Truck,
   ShieldCheck,
-  TrendingUp,
 } from 'lucide-react';
 
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Badge } from '../../components/ui/Badge';
+import { TermTooltip } from '../../components/ui/TermTooltip';
 import { inventoryService } from '../../services/inventory.service';
-import { CATEGORIES, STORES } from '../../mocks/demo-data';
+import { CATEGORIES } from '../../mocks/demo-data';
 import { InventoryItem, StockStatus } from '../../types';
 
 interface InventoryPageProps {
@@ -150,17 +150,21 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
                   className="px-3 py-3 font-semibold text-right cursor-pointer hover:bg-slate-100"
                 >
                   <span className="inline-flex items-center gap-1">
-                    Daily Demand <ArrowUpDown className="w-3 h-3" />
+                    <TermTooltip termKey="dailyDemand" text="Daily Demand" /> <ArrowUpDown className="w-3 h-3" />
                   </span>
                 </th>
-                <th className="px-3 py-3 font-semibold text-right">Lead Time</th>
-                <th className="px-3 py-3 font-semibold text-right">Reorder Point</th>
+                <th className="px-3 py-3 font-semibold text-right">
+                  <TermTooltip termKey="leadTime" text="Lead Time" />
+                </th>
+                <th className="px-3 py-3 font-semibold text-right">
+                  <TermTooltip termKey="rop" text="Reorder Point" />
+                </th>
                 <th
                   onClick={() => handleSort('daysOfStockRemaining')}
                   className="px-3 py-3 font-semibold text-right cursor-pointer hover:bg-slate-100"
                 >
                   <span className="inline-flex items-center gap-1">
-                    Coverage <ArrowUpDown className="w-3 h-3" />
+                    <TermTooltip termKey="daysOfStock" text="Coverage" /> <ArrowUpDown className="w-3 h-3" />
                   </span>
                 </th>
                 <th className="px-3 py-3 font-semibold">Status</th>

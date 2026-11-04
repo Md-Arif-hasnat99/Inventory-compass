@@ -7,10 +7,12 @@ import {
   Database,
   Sparkles,
   RefreshCw,
+  BookOpen,
 } from 'lucide-react';
 
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Badge } from '../../components/ui/Badge';
+import { TermTooltip } from '../../components/ui/TermTooltip';
 import { inventoryService } from '../../services/inventory.service';
 import { ReplenishmentRecommendation } from '../../types';
 import { useUploadContext } from '../../context/UploadContext';
@@ -237,10 +239,19 @@ export const ReplenishmentPage: React.FC<ReplenishmentPageProps> = ({ selectedSt
           </div>
         </div>
 
-        <div className="text-xs text-slate-500 max-w-sm">
-          <p className="font-semibold text-slate-700">Formula Breakdown:</p>
-          <code className="text-[11px] bg-slate-50 px-1 py-0.5 rounded text-emerald-800 font-mono">
-            ROP = (Daily Forecast × {leadTimeDays}d) + (Daily Forecast × {safetyStockDays}d)
+        <div className="text-xs text-slate-500 max-w-md">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-semibold text-slate-700">Formula Breakdown:</span>
+            <Link
+              to="/guide"
+              className="text-[11px] text-emerald-700 hover:text-emerald-900 font-semibold inline-flex items-center gap-1 underline"
+            >
+              <BookOpen className="w-3 h-3" />
+              <span>Full Guide & Calculator</span>
+            </Link>
+          </div>
+          <code className="text-[11px] bg-slate-50 px-1.5 py-0.5 rounded text-emerald-800 font-mono block overflow-x-auto border border-slate-200">
+            ROP = (Daily Demand × {leadTimeDays}d) + (Daily Demand × {safetyStockDays}d)
           </code>
         </div>
       </div>
@@ -310,11 +321,21 @@ export const ReplenishmentPage: React.FC<ReplenishmentPageProps> = ({ selectedSt
                   <th className="px-4 py-3 font-semibold">SKU / Product</th>
                   <th className="px-3 py-3 font-semibold">Store</th>
                   <th className="px-3 py-3 font-semibold text-right">Current Stock</th>
-                  <th className="px-3 py-3 font-semibold text-right">Daily Demand</th>
-                  <th className="px-3 py-3 font-semibold text-right">Lead Time</th>
-                  <th className="px-3 py-3 font-semibold text-right">Reorder Point</th>
-                  <th className="px-3 py-3 font-semibold text-right">Suggested Qty</th>
-                  <th className="px-3 py-3 font-semibold">Stockout Risk</th>
+                  <th className="px-3 py-3 font-semibold text-right">
+                    <TermTooltip termKey="dailyDemand" text="Daily Demand" />
+                  </th>
+                  <th className="px-3 py-3 font-semibold text-right">
+                    <TermTooltip termKey="leadTime" text="Lead Time" />
+                  </th>
+                  <th className="px-3 py-3 font-semibold text-right">
+                    <TermTooltip termKey="rop" text="Reorder Point" />
+                  </th>
+                  <th className="px-3 py-3 font-semibold text-right">
+                    <TermTooltip termKey="suggestedOrder" text="Suggested Qty" />
+                  </th>
+                  <th className="px-3 py-3 font-semibold">
+                    <TermTooltip termKey="stockoutRisk" text="Stockout Risk" />
+                  </th>
                   <th className="px-4 py-3 font-semibold">Calculation Breakdown</th>
                 </tr>
               </thead>

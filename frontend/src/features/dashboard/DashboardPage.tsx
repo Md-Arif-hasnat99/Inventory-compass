@@ -28,6 +28,7 @@ import {
 import { PageContainer } from '../../components/layout/PageContainer';
 import { KpiCard } from '../../components/ui/KpiCard';
 import { Badge } from '../../components/ui/Badge';
+import { TermTooltip } from '../../components/ui/TermTooltip';
 import { dashboardService } from '../../services/dashboard.service';
 import { inventoryService } from '../../services/inventory.service';
 import {
@@ -131,19 +132,20 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
         <KpiCard
           label="Total Units Sold"
           value={kpis ? kpis.totalUnitsSold.toLocaleString() : '---'}
-          subtext="Recorded across 73k transaction rows"
+          subtext="Historical store transaction volume"
           icon={ShoppingBag}
           trend={{ value: '+4.2%', isPositive: true }}
-          tooltip="Total historical units sold in training and test splits"
+          tooltip="Total historical units sold recorded in dataset"
         />
         <KpiCard
           label="14-Day Demand Forecast"
           value={kpis ? kpis.forecastedDemand.toLocaleString() : '---'}
-          subtext="Estimated upcoming consumer demand"
+          subtext="Projected consumer demand"
           icon={TrendingUp}
           trend={{ value: 'Projected', isNeutral: true }}
-          badge="ML t+14"
+          badge="AI Outlook"
           badgeVariant="emerald"
+          tooltip="Forward-looking consumer demand projected for the upcoming two-week period"
         />
         <KpiCard
           label="Products at Risk"
@@ -152,6 +154,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
           icon={AlertTriangle}
           badge={`${kpis?.criticalStockCount || 0} Critical`}
           badgeVariant="red"
+          tooltip="Products where remaining days of stock are dangerously close to or lower than supplier lead time"
         />
         <KpiCard
           label="Reorder Actions Required"
@@ -160,6 +163,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
           icon={RotateCcw}
           badge="Actionable"
           badgeVariant="amber"
+          tooltip="Products that have crossed the automated Reorder Point (ROP) threshold and require purchase orders"
         />
       </div>
 
@@ -171,7 +175,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
             <div>
               <h3 className="text-sm font-bold text-slate-900">Historical Sales & Forward Demand Curve</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                30-day actual sales vs. 14-day ML model forecast with ±15% prediction interval
+                30-day actual sales vs. 14-day demand forecast with ±15% confidence interval
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs">
@@ -181,7 +185,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-emerald-600 rounded" />
-                <span className="text-emerald-700 font-medium">ML Forecast</span>
+                <span className="text-emerald-700 font-medium">Demand Forecast</span>
               </div>
             </div>
           </div>
@@ -221,7 +225,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                           </div>
                           {isFcast && (
                             <span className="inline-block mt-1 text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                              Model Projected
+                              Demand Forecast
                             </span>
                           )}
                         </div>

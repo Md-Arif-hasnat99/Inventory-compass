@@ -51,16 +51,6 @@ export const inventoryService = {
     };
   },
 
-  async getProductById(productId: string): Promise<ApiResponse<InventoryItem | null>> {
-    await new Promise((r) => setTimeout(r, 40));
-    const item = DEMO_INVENTORY_ITEMS.find((i) => i.productId === productId) || null;
-    return {
-      data: item,
-      isDemo: true,
-      status: 'success',
-    };
-  },
-
   /**
    * Request inventory replenishment recommendations for an uploaded dataset.
    * Directly calls FastAPI POST /api/replenishment/{upload_id}.
@@ -92,14 +82,14 @@ export const inventoryService = {
   },
 
   /**
-   * Fetch cached replenishment recommendations for an upload session.
+   * Fetch already-generated cached forecast for an upload session.
    */
-  async getCachedSellerReplenishment(uploadId: string): Promise<import('../types').SellerReplenishmentResponse | null> {
-    const res = await fetch(`${API_BASE_URL}/api/replenishment/${uploadId}`);
+  async getCachedForecast(uploadId: string): Promise<import('../types').SellerForecastResponse | null> {
+    const res = await fetch(`${API_BASE_URL}/api/forecast/${uploadId}`);
     if (res.status === 404) return null;
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: res.statusText }));
-      throw new Error(err.detail || `Failed to fetch cached replenishment (${res.status})`);
+      throw new Error(err.detail || `Failed to fetch cached forecast (${res.status})`);
     }
     return res.json();
   },
