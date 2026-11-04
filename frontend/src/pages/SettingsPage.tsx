@@ -34,7 +34,7 @@ function Surface({ children, compact }: { children: React.ReactNode; compact?: b
   );
 }
 
-export const SettingsPage: React.FC = () => {
+const SettingsPage: React.FC = () => {
   const [defaultHorizon, setDefaultHorizon] = useState('14');
   const [theme, setTheme] = useState<'light' | 'system'>('light');
   const [saved, setSaved] = useState(false);
