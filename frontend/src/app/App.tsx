@@ -1,86 +1,48 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { AppSidebar } from '../components/layout/AppSidebar';
-import { Topbar } from '../components/layout/Topbar';
-import { DashboardPage } from '../features/dashboard/DashboardPage';
-import { ForecastPage } from '../features/forecasting/ForecastPage';
-import { InventoryPage } from '../features/inventory/InventoryPage';
-import { ReplenishmentPage } from '../features/inventory/ReplenishmentPage';
-import { ProductsPage } from '../features/products/ProductsPage';
-import { InventoryGuidePage } from '../features/guide/InventoryGuidePage';
-import { SettingsPage } from '../features/settings/SettingsPage';
-import { UploadPage } from '../features/upload/UploadPage';
+import { LandingPage } from '../pages/LandingPage';
+import { AppShell } from '../components/layout/AppShell';
+import { OverviewPage } from '../pages/OverviewPage';
+import { UploadPage } from '../pages/UploadPage';
+import { ForecastPage } from '../pages/ForecastPage';
+import { ReplenishmentPage } from '../pages/ReplenishmentPage';
+import { ModelEvaluationPage } from '../pages/ModelEvaluationPage';
+import { SettingsPage, NotFoundPage } from '../pages/SettingsPage';
 import { AppProviders } from './providers';
-import { useDocumentSeo } from '../hooks/useDocumentSeo';
 
-const routeTitles: Record<string, string> = {
-  '/': 'Overview Dashboard',
-  '/upload': 'Upload Your Data',
-  '/forecast': 'Demand Forecasting',
-  '/inventory': 'Inventory Management',
-  '/inventory/replenishment': 'Replenishment Actions',
-  '/products': 'Products Catalog',
-  '/guide': 'Terms & Inventory Guide',
-  '/settings': 'System Settings',
-};
-
-const AppLayout: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedStore, setSelectedStore] = useState('ALL');
-  const location = useLocation();
-
-  // Dynamically update document title and SEO metadata on route changes
-  useDocumentSeo();
-
-  const currentTitle = routeTitles[location.pathname] || 'Inventory Compass';
-
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
-      {/* Sidebar Navigation */}
-      <AppSidebar
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed(!collapsed)}
-        mobileOpen={mobileOpen}
-        onCloseMobile={() => setMobileOpen(false)}
-      />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <Topbar
-          onOpenMobileSidebar={() => setMobileOpen(true)}
-          selectedStore={selectedStore}
-          onSelectStore={setSelectedStore}
-          title={currentTitle}
-        />
-
-        <main id="main-content" className="flex-1 pb-16" role="main">
-          <Routes>
-            <Route path="/" element={<DashboardPage selectedStore={selectedStore} />} />
-            <Route path="/upload" element={<UploadPage />} />
-            <Route path="/forecast" element={<ForecastPage />} />
-            <Route path="/inventory" element={<InventoryPage selectedStore={selectedStore} />} />
-            <Route
-              path="/inventory/replenishment"
-              element={<ReplenishmentPage selectedStore={selectedStore} />}
-            />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/guide" element={<InventoryGuidePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-      </div>
-    </div>
-  );
-};
+const WorkspaceRoutes = () => (
+  <Routes>
+    <Route path="overview" element={<OverviewPage />} />
+    <Route path="upload" element={<UploadPage />} />
+    <Route path="forecasts" element={<ForecastPage />} />
+    <Route path="inventory" element={<ReplenishmentPage />} />
+    <Route path="replenishment" element={<ReplenishmentPage />} />
+    <Route path="evaluation" element={<ModelEvaluationPage />} />
+    <Route path="settings" element={<SettingsPage />} />
+    <Route path="*" element={<Navigate to="overview" replace />} />
+  </Routes>
+);
 
 export const App: React.FC = () => {
+  const [selectedStore, setSelectedStore] = useState('ALL');
+
   return (
     <AppProviders>
       <BrowserRouter>
-        <AppLayout />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/workspace/*">
+            <AppShell>
+              <WorkspaceRoutes />
+            </AppShell>
+          </Route>
+          <Route path="/inventory" element={<Navigate to="/workspace/inventory" replace />} />
+          <Route path="/forecast" element={<Navigate to="/workspace/forecasts" replace />} />
+          <Route path="/upload" element={<Navigate to="/workspace/upload" replace />} />
+          <Route path="/settings" element={<Navigate to="/workspace/settings" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </BrowserRouter>
     </AppProviders>
   );
