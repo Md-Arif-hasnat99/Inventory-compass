@@ -134,9 +134,9 @@ export const TermTooltip: React.FC<TermTooltipProps> = ({
         setIsOpen((prev) => !prev);
       }}
     >
-      {text && <span className="border-b border-dotted border-slate-400 group-hover/term:border-emerald-600 transition-colors">{text}</span>}
+      {text && <span className="border-b border-dotted border-slate-400 group-hover/term:border-blue-600 transition-colors">{text}</span>}
       {showIcon && (
-        <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover/term:text-emerald-600 transition-colors shrink-0" />
+        <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover/term:text-blue-600 transition-colors shrink-0" />
       )}
 
       {/* Popover */}
@@ -148,13 +148,13 @@ export const TermTooltip: React.FC<TermTooltipProps> = ({
         >
           {/* Header */}
           <span className="flex items-center justify-between pb-1.5 border-b border-slate-700/70 mb-2">
-            <span className="font-bold text-emerald-300 text-xs flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="font-bold text-blue-300 text-xs flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 text-blue-400" />
               {info.title}
             </span>
             <Link
               to="/guide"
-              className="text-[10px] text-slate-400 hover:text-emerald-300 flex items-center gap-0.5 underline transition-colors"
+              className="text-[10px] text-slate-400 hover:text-blue-300 flex items-center gap-0.5 underline transition-colors"
             >
               Guide <ExternalLink className="w-2.5 h-2.5" />
             </Link>
@@ -167,7 +167,7 @@ export const TermTooltip: React.FC<TermTooltipProps> = ({
 
           {/* Formula if present */}
           {info.formula && (
-            <span className="block p-1.5 rounded bg-slate-800/90 text-emerald-300 font-mono text-[10px] border border-slate-700 mb-2 overflow-x-auto">
+            <span className="block p-1.5 rounded bg-slate-800/90 text-blue-300 font-mono text-[10px] border border-slate-700 mb-2 overflow-x-auto">
               {info.formula}
             </span>
           )}

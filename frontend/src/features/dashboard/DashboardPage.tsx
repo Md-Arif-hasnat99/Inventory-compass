@@ -89,9 +89,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/forecast')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-md transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-md shadow-xs transition-colors"
           >
-            <span>Deep Dive Forecast</span>
+            <span>Demand Forecasting</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -99,16 +99,16 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
     >
       {/* Demo or Real Dataset Notice Banner */}
       {isRealData && activeSession ? (
-        <div className="flex items-center justify-between p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
+        <div className="flex items-center justify-between p-3.5 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-900">
           <div className="flex items-center gap-2.5">
-            <Info className="w-4 h-4 text-emerald-700 shrink-0" />
+            <Info className="w-4 h-4 text-blue-700 shrink-0" />
             <div>
               <span className="font-semibold">Active Seller Dataset:</span>{' '}
               {activeSession.display_filename} ({activeSession.row_count.toLocaleString()} rows).
               Projections and replenishment actions reflect your store data.
             </div>
           </div>
-          <Link to="/forecast" className="text-emerald-700 hover:text-emerald-900 font-bold underline shrink-0 ml-3">
+          <Link to="/forecast" className="text-blue-700 hover:text-blue-900 font-bold underline shrink-0 ml-3">
             View Live Forecast →
           </Link>
         </div>
@@ -117,10 +117,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
           <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
           <div className="flex-1 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <span className="font-semibold text-slate-800">Operational Demo Context:</span> Current
+              <span className="font-semibold text-slate-800">Demo Data Context:</span> Current
               aggregations display historical retail trends from Store S001–S005.
             </div>
-            <Link to="/upload" className="text-emerald-700 hover:text-emerald-800 font-semibold underline shrink-0">
+            <Link to="/upload" className="text-blue-700 hover:text-blue-900 font-semibold underline shrink-0">
               Upload Shop CSV →
             </Link>
           </div>
@@ -143,8 +143,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
           subtext="Projected consumer demand"
           icon={TrendingUp}
           trend={{ value: 'Projected', isNeutral: true }}
-          badge="AI Outlook"
-          badgeVariant="emerald"
+          badge="Forecast"
+          badgeVariant="slate"
           tooltip="Forward-looking consumer demand projected for the upcoming two-week period"
         />
         <KpiCard
@@ -175,7 +175,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
             <div>
               <h3 className="text-sm font-bold text-slate-900">Historical Sales & Forward Demand Curve</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                30-day actual sales vs. 14-day demand forecast with ±15% confidence interval
+                30-day actual sales vs. 14-day demand forecast with confidence intervals.
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs">
@@ -184,8 +184,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                 <span className="text-slate-600">Observed Actual</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-0.5 bg-emerald-600 rounded" />
-                <span className="text-emerald-700 font-medium">Demand Forecast</span>
+                <span className="w-3 h-0.5 bg-blue-600 rounded" />
+                <span className="text-blue-700 font-medium">Expected Demand</span>
               </div>
             </div>
           </div>
@@ -213,21 +213,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                       const pred = payload.find((p) => p.dataKey === 'forecastDemand')?.value;
                       const isFcast = Boolean(pred);
                       return (
-                        <div className="bg-white border border-slate-200 rounded-md p-2.5 shadow-md text-xs">
+                        <div className="bg-white border border-slate-200 rounded-md p-3 shadow-md text-xs">
                           <p className="font-semibold text-slate-800">{label}</p>
-                          <div className="mt-1 space-y-0.5">
+                          <div className="mt-1 space-y-1">
                             {actual !== undefined && actual !== null && (
                               <p className="text-slate-700">Actual Units: <span className="font-semibold">{actual}</span></p>
                             )}
                             {pred !== undefined && pred !== null && (
-                              <p className="text-emerald-700 font-medium">Forecasted: <span className="font-semibold">{pred} units</span></p>
+                              <p className="text-blue-700 font-bold text-sm">Expected Demand: <span className="font-semibold">{pred} units</span></p>
+                            )}
+                            {isFcast && (
+                              <span className="inline-block mt-1 text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                                Expected Demand
+                              </span>
                             )}
                           </div>
-                          {isFcast && (
-                            <span className="inline-block mt-1 text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                              Demand Forecast
-                            </span>
-                          )}
                         </div>
                       );
                     }
@@ -242,12 +242,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                     label={{ value: 'Forecast Horizon →', position: 'top', fill: '#64748b', fontSize: 10 }}
                   />
                 )}
-                {/* Confidence band for forecast */}
                 <Area
                   type="monotone"
                   dataKey="upperBound"
                   stroke="none"
-                  fill="#10b981"
+                  fill="#3b82f6"
                   fillOpacity={0.12}
                 />
                 <Area
@@ -268,10 +267,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                 <Line
                   type="monotone"
                   dataKey="forecastDemand"
-                  stroke="#059669"
+                  stroke="#2563eb"
                   strokeWidth={2.5}
                   strokeDasharray="5 3"
-                  dot={{ r: 3, fill: '#059669' }}
+                  dot={{ r: 3.5, fill: '#2563eb' }}
                   activeDot={{ r: 6 }}
                 />
               </ComposedChart>
@@ -327,7 +326,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="flex items-center gap-1.5 text-slate-600">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" /> Healthy Range
+                <span className="w-2 h-2 rounded-full bg-green-500" /> Healthy Range
               </span>
               <span className="font-semibold text-slate-900">30% (Adequate cover)</span>
             </div>
@@ -348,7 +347,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
             </div>
             <button
               onClick={() => navigate('/inventory/replenishment')}
-              className="text-xs text-emerald-700 hover:text-emerald-800 font-medium inline-flex items-center gap-1"
+              className="text-xs text-blue-700 hover:text-blue-900 font-medium inline-flex items-center gap-1"
             >
               All Alerts <ArrowRight className="w-3.5 h-3.5" />
             </button>
@@ -388,7 +387,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => navigate(`/forecast?product=${item.productId}`)}
-                        className="text-slate-600 hover:text-emerald-700 font-medium text-[11px] underline underline-offset-2"
+                        className="text-slate-600 hover:text-blue-700 font-medium text-[11px] underline underline-offset-2"
                       >
                         Forecast
                       </button>
@@ -411,7 +410,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ selectedStore }) =
             </div>
             <button
               onClick={() => navigate('/products')}
-              className="text-xs text-emerald-700 hover:text-emerald-800 font-medium inline-flex items-center gap-1"
+              className="text-xs text-blue-700 hover:text-blue-900 font-medium inline-flex items-center gap-1"
             >
               Full Catalog <ArrowRight className="w-3.5 h-3.5" />
             </button>

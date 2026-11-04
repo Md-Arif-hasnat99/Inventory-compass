@@ -51,7 +51,7 @@ const EXTENDED_GLOSSARY: Record<string, GlossaryEntry> = {
     ...INVENTORY_GLOSSARY.suggestedOrder,
     key: 'suggestedOrder',
     inDepth: [
-      'Our intelligent replenishment engine calculates the exact number of units to order right now.',
+      'Our replenishment engine calculates the exact number of units to order right now.',
       'It looks at your current shelf stock, subtracts expected sales during supplier transit, and tops your stock up to your target maximum cycle level.',
       'This eliminates guesswork and prevents cash from being trapped in overstocked goods.',
     ],
@@ -175,26 +175,26 @@ export const InventoryGuidePage: React.FC = () => {
         (entry.formula && entry.formula.toLowerCase().includes(search.toLowerCase())) ||
         entry.inDepth.some((point) => point.toLowerCase().includes(search.toLowerCase()));
       return matchesCategory && matchesSearch;
-    });
+    }, [search, selectedCategory]);
   }, [search, selectedCategory]);
 
   return (
     <PageContainer
-      title="Terms & Clarifications Guide"
+      title="Terms & Inventory Guide"
       description="A plain-English knowledge hub for understanding inventory terminology, replenishment calculations, and demand forecasting concepts."
     >
       {/* Overview Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-slate-900 text-white rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-800 text-emerald-200 text-xs font-semibold mb-3">
-            <BookOpen className="w-3.5 h-3.5 text-emerald-300" />
-            <span>Retail Inventory & Forecasting Primer</span>
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-blue-600 text-blue-100 text-xs font-semibold mb-3">
+            <BookOpen className="w-3.5 h-3.5 text-blue-300" />
+            <span>Retail Inventory Primer</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
             Clear Explanations for Every Term & Metric
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-emerald-100/90 max-w-2xl leading-relaxed">
-            No confusing machine learning jargon or opaque equations. Discover how Reorder Points,
+          <p className="mt-2 text-xs sm:text-sm text-slate-200/90 max-w-2xl leading-relaxed">
+            No confusing jargon or opaque equations. Discover how Reorder Points,
             Safety Buffers, and Demand Forecasts combine to protect store revenue and prevent stockouts.
           </p>
         </div>
@@ -202,7 +202,7 @@ export const InventoryGuidePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
           <a
             href="#interactive-calculator"
-            className="w-full sm:w-auto px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-xs"
+            className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
           >
             <Calculator className="w-4 h-4" />
             <span>Try ROP Calculator</span>
@@ -218,7 +218,7 @@ export const InventoryGuidePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-md bg-blue-100 text-blue-800 flex items-center justify-center">
                 <Calculator className="w-4 h-4" />
               </div>
               <h3 className="text-base font-bold text-slate-900">
@@ -229,7 +229,7 @@ export const InventoryGuidePage: React.FC = () => {
               Adjust parameters below to see how customer demand and supplier delivery speed dictate your reorder trigger.
             </p>
           </div>
-          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
+          <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200 self-start sm:self-auto">
             Live Calculation
           </span>
         </div>
@@ -247,7 +247,7 @@ export const InventoryGuidePage: React.FC = () => {
                 max="500"
                 value={calcDailyDemand}
                 onChange={(e) => setCalcDailyDemand(Math.max(1, Number(e.target.value)))}
-                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">Expected consumer sales per day</span>
             </div>
@@ -262,7 +262,7 @@ export const InventoryGuidePage: React.FC = () => {
                 max="60"
                 value={calcLeadTime}
                 onChange={(e) => setCalcLeadTime(Math.max(1, Number(e.target.value)))}
-                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">Time from order placement to delivery</span>
             </div>
@@ -277,7 +277,7 @@ export const InventoryGuidePage: React.FC = () => {
                 max="30"
                 value={calcSafetyDays}
                 onChange={(e) => setCalcSafetyDays(Math.max(0, Number(e.target.value)))}
-                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">Buffer days to protect against supplier delays</span>
             </div>
@@ -292,7 +292,7 @@ export const InventoryGuidePage: React.FC = () => {
                 max="2000"
                 value={calcCurrentStock}
                 onChange={(e) => setCalcCurrentStock(Math.max(0, Number(e.target.value)))}
-                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">Units physically available right now</span>
             </div>
@@ -309,7 +309,7 @@ export const InventoryGuidePage: React.FC = () => {
                   className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
                     needsReorder
                       ? 'bg-red-100 text-red-800 border border-red-200'
-                      : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      : 'bg-green-100 text-green-800 border border-green-200'
                   }`}
                 >
                   {needsReorder ? '⚠️ Action Required: Reorder Now' : '✓ Stock Healthy'}
@@ -331,10 +331,10 @@ export const InventoryGuidePage: React.FC = () => {
                     {calcDailyDemand}/day × {calcSafetyDays}d
                   </span>
                 </div>
-                <div className="bg-emerald-50 p-2.5 rounded-lg border border-emerald-200 shadow-2xs">
-                  <span className="text-[10px] text-emerald-800 font-bold block">Reorder Point</span>
-                  <span className="text-lg font-black text-emerald-900">{calculatedROP} units</span>
-                  <span className="text-[9px] text-emerald-700 block mt-0.5">
+                <div className="bg-blue-50 p-2.5 rounded-lg border border-blue-200 shadow-2xs">
+                  <span className="text-[10px] text-blue-800 font-bold block">Reorder Point</span>
+                  <span className="text-lg font-black text-blue-900">{calculatedROP} units</span>
+                  <span className="text-[9px] text-blue-700 block mt-0.5">
                     Trigger Threshold
                   </span>
                 </div>
@@ -375,7 +375,7 @@ export const InventoryGuidePage: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3 py-2 text-xs font-semibold rounded-t-lg transition-colors whitespace-nowrap cursor-pointer ${
                   selectedCategory === cat.id
-                    ? 'bg-emerald-50 text-emerald-900 border-b-2 border-emerald-600'
+                    ? 'bg-blue-50 text-blue-900 border-b-2 border-blue-600'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -392,7 +392,7 @@ export const InventoryGuidePage: React.FC = () => {
               placeholder="Search terms, formulas, or concepts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-2xs"
             />
           </div>
         </div>
@@ -402,12 +402,12 @@ export const InventoryGuidePage: React.FC = () => {
           {filteredEntries.map((item) => (
             <div
               key={item.key}
-              className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between hover:border-emerald-300 transition-colors"
+              className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between hover:border-blue-300 transition-colors"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-slate-100">
                   <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                    <span className="w-2 h-2 rounded-full bg-blue-600" />
                     {item.title}
                   </h4>
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
@@ -421,7 +421,7 @@ export const InventoryGuidePage: React.FC = () => {
 
                 {item.formula && (
                   <div className="mt-3 p-2 rounded-md bg-slate-50 border border-slate-200 text-slate-800 font-mono text-[11px] overflow-x-auto">
-                    <span className="text-[9px] uppercase font-bold text-emerald-800 block mb-0.5">
+                    <span className="text-[9px] uppercase font-bold text-blue-800 block mb-0.5">
                       Formula
                     </span>
                     {item.formula}
@@ -437,15 +437,15 @@ export const InventoryGuidePage: React.FC = () => {
                 </div>
 
                 {item.example && (
-                  <div className="mt-3 p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-950">
-                    <strong className="text-emerald-900">Real-World Example: </strong>
-                    <span className="text-emerald-900/90">{item.example}</span>
+                  <div className="mt-3 p-2.5 rounded-lg bg-blue-50/70 border border-blue-100 text-xs text-blue-950">
+                    <strong className="text-blue-900">Real-World Example: </strong>
+                    <span className="text-blue-900/90">{item.example}</span>
                   </div>
                 )}
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-start gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                 <span>
                   <strong className="text-slate-700">Best Practice: </strong>
                   {item.bestPractice}
@@ -467,7 +467,7 @@ export const InventoryGuidePage: React.FC = () => {
       {/* Plain-English FAQ Section */}
       <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs mt-6">
         <h3 className="text-base font-bold text-slate-900 mb-1 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-emerald-600" />
+          <Sparkles className="w-4 h-4 text-slate-400" />
           Frequently Asked Questions
         </h3>
         <p className="text-xs text-slate-500 mb-5">

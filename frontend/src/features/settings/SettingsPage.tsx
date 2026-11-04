@@ -6,7 +6,6 @@ import { API_BASE_URL } from '../../services/api-client';
 
 export const SettingsPage: React.FC = () => {
   const [defaultHorizon, setDefaultHorizon] = useState('14');
-  const [demoMode, setDemoMode] = useState(true);
   const [theme, setTheme] = useState<'light' | 'system'>('light');
   const [saved, setSaved] = useState(false);
 
@@ -18,7 +17,7 @@ export const SettingsPage: React.FC = () => {
   return (
     <PageContainer
       title="Application & System Settings"
-      description="Configure analytical parameters, display preferences, and machine learning runtime bridge."
+      description="Configure analytical parameters, display preferences, and backend runtime bridge."
     >
       <div className="max-w-3xl space-y-6">
         {/* Forecasting Defaults */}
@@ -35,7 +34,7 @@ export const SettingsPage: React.FC = () => {
               <select
                 value={defaultHorizon}
                 onChange={(e) => setDefaultHorizon(e.target.value)}
-                className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500 min-w-48"
+                className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 min-w-48"
               >
                 <option value="7">7 Days Ahead (Weekly Cycle)</option>
                 <option value="14">14 Days Ahead (Standard MRP Buffer)</option>
@@ -63,9 +62,9 @@ export const SettingsPage: React.FC = () => {
         {/* Backend & Environment Status */}
         <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-xs">
           <h3 className="text-sm font-bold text-slate-900 pb-3 border-b border-slate-100 flex items-center justify-between">
-            <span>Machine Learning Backend Connection</span>
-            <span className="text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-              Contract Ready
+            <span>Backend Connection</span>
+            <span className="text-[11px] font-medium text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+              Configured
             </span>
           </h3>
 
@@ -82,12 +81,12 @@ export const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between py-2 border-b border-slate-100">
               <span className="text-slate-600">Forecasting Engine Pipeline</span>
-              <span className="font-semibold text-emerald-700">Verified & Operational</span>
+              <span className="font-semibold text-blue-700">Operational</span>
             </div>
 
             <div className="flex items-center justify-between py-2">
               <span className="text-slate-600">FastAPI Microservice Bridge</span>
-              <span className="text-slate-500">FastAPI service will bind to :8000 when started</span>
+              <span className="text-slate-500">FastAPI service binds to :8000 when started</span>
             </div>
           </div>
         </div>
@@ -103,7 +102,7 @@ export const SettingsPage: React.FC = () => {
               onClick={() => setTheme('light')}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold transition-colors ${
                 theme === 'light'
-                  ? 'border-emerald-600 bg-emerald-50 text-emerald-900'
+                  ? 'border-blue-600 bg-blue-50 text-blue-900'
                   : 'border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
@@ -115,7 +114,7 @@ export const SettingsPage: React.FC = () => {
               onClick={() => setTheme('system')}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-colors ${
                 theme === 'system'
-                  ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-semibold'
+                  ? 'border-blue-600 bg-blue-50 text-blue-900 font-semibold'
                   : 'border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
@@ -128,13 +127,13 @@ export const SettingsPage: React.FC = () => {
         {/* Save button */}
         <div className="flex items-center justify-end gap-3 pt-2">
           {saved && (
-            <span className="text-xs text-emerald-700 font-medium inline-flex items-center gap-1">
+            <span className="text-xs text-blue-700 font-medium inline-flex items-center gap-1">
               <CheckCircle className="w-4 h-4" /> Preferences saved!
             </span>
           )}
           <button
             onClick={handleSave}
-            className="px-4 py-2 text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded-md shadow-xs transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-xs transition-colors"
           >
             Save Configuration
           </button>

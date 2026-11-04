@@ -27,7 +27,6 @@ interface InventoryPageProps {
 export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) => {
   const navigate = useNavigate();
   const [items, setItems] = useState<InventoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All Categories');
   const [statusFilter, setStatusFilter] = useState<StockStatus | 'ALL'>('ALL');
@@ -37,7 +36,6 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
 
   useEffect(() => {
     async function fetchInventory() {
-      setLoading(true);
       try {
         const res = await inventoryService.getInventory({
           storeId: selectedStore,
@@ -46,8 +44,8 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
           search,
         });
         setItems(res.data);
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        console.error('Failed to fetch inventory', e);
       }
     }
     fetchInventory();
@@ -75,7 +73,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
       actions={
         <button
           onClick={() => navigate('/inventory/replenishment')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded-md shadow-xs transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-xs transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Replenishment Actions</span>
@@ -93,7 +91,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
               placeholder="Search product ID or name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -101,7 +99,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors"
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
@@ -114,7 +112,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors"
           >
             <option value="ALL">All Statuses</option>
             <option value="CRITICAL">Critical Only</option>
@@ -217,7 +215,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
                         e.stopPropagation();
                         setActiveItem(item);
                       }}
-                      className="text-slate-600 hover:text-emerald-700 font-medium text-[11px] underline underline-offset-2"
+                      className="text-slate-600 hover:text-blue-700 font-medium text-[11px] underline underline-offset-2"
                     >
                       Details
                     </button>
@@ -288,7 +286,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
 
                 <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
                   <span className="font-semibold text-slate-700">Recommended Order Quantity:</span>
-                  <span className="text-base font-bold text-emerald-700">
+                  <span className="text-base font-bold text-blue-700">
                     {Math.max(0, activeItem.reorderPoint - activeItem.currentStock)} units
                   </span>
                 </div>
@@ -307,7 +305,7 @@ export const InventoryPage: React.FC<InventoryPageProps> = ({ selectedStore }) =
                     setActiveItem(null);
                     navigate('/inventory/replenishment');
                   }}
-                  className="px-3 py-1.5 text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded-md transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
                 >
                   Go to Replenishment
                 </button>

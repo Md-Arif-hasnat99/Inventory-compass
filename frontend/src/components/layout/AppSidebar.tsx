@@ -1,17 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Compass,
   LayoutDashboard,
-  TrendingUp,
-  PackageCheck,
+  Upload,
+  BarChart,
+  Package,
+  ClipboardList,
   ShoppingBag,
   BookOpen,
   Settings,
   ChevronLeft,
   ChevronRight,
-  ClipboardList,
-  Upload,
+  Store,
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -24,8 +24,8 @@ interface AppSidebarProps {
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard, exact: true },
   { to: '/upload', label: 'Upload Data', icon: Upload, badge: 'NEW' },
-  { to: '/forecast', label: 'Demand Forecast', icon: TrendingUp },
-  { to: '/inventory', label: 'Inventory Management', icon: PackageCheck },
+  { to: '/forecast', label: 'Demand Forecast', icon: BarChart },
+  { to: '/inventory', label: 'Inventory Management', icon: Package },
   { to: '/inventory/replenishment', label: 'Replenishment', icon: ClipboardList },
   { to: '/products', label: 'Products Catalog', icon: ShoppingBag },
   { to: '/guide', label: 'Terms & Guide', icon: BookOpen, badge: 'GUIDE' },
@@ -57,8 +57,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         {/* Brand header */}
         <div className="h-16 px-4 flex items-center justify-between border-b border-slate-100">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow-xs">
-              <Compass className="w-5 h-5 stroke-[2.2]" />
+            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+              <Store className="w-5 h-5 stroke-[2.2]" />
             </div>
             {!collapsed && (
               <div className="min-w-0">
@@ -66,7 +66,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   Inventory Compass
                 </span>
                 <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-semibold truncate">
-                  Retail ML Suite
+                  Retail Inventory System
                 </span>
               </div>
             )}
@@ -95,7 +95,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all group ${
                     isActive
-                      ? 'bg-emerald-50 text-emerald-900 font-semibold'
+                      ? 'bg-blue-50 text-blue-900 font-semibold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   } ${collapsed ? 'justify-center px-0' : ''}`
                 }
@@ -105,14 +105,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   <>
                     <Icon
                       className={`w-4 h-4 shrink-0 transition-colors ${
-                        isActive ? 'text-emerald-700' : 'text-slate-400 group-hover:text-slate-600'
+                        isActive ? 'text-blue-700' : 'text-slate-400 group-hover:text-slate-600'
                       }`}
                     />
                     {!collapsed && (
                       <span className="truncate flex-1">{item.label}</span>
                     )}
                     {!collapsed && item.badge && (
-                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded">
+                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-800 rounded">
                         {item.badge}
                       </span>
                     )}
@@ -128,14 +128,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
           {!collapsed ? (
             <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] font-medium text-slate-700">Forecast Engine Online</span>
+                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                <span className="text-[11px] font-medium text-slate-700">System Online</span>
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">Autonomous Demand Intelligence</p>
+              <p className="text-[10px] text-slate-500 mt-1">Inventory Control Center</p>
             </div>
           ) : (
-            <div className="flex justify-center" title="Forecast Engine: Online">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <div className="flex justify-center" title="System: Online">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
             </div>
           )}
         </div>

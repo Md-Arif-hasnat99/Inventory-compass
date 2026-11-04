@@ -2,7 +2,7 @@ import React from 'react';
 import { StockStatus } from '../../types';
 
 interface BadgeProps {
-  status?: StockStatus | 'CHAMPION' | 'DEMO' | 'REAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  status?: StockStatus | 'HIGH' | 'MEDIUM' | 'LOW';
   children?: React.ReactNode;
   className?: string;
   size?: 'sm' | 'md';
@@ -26,17 +26,10 @@ export const Badge: React.FC<BadgeProps> = ({
       colorStyles = 'bg-amber-50 text-amber-700 border-amber-200 font-medium';
       break;
     case 'HEALTHY':
-    case 'CHAMPION':
-      colorStyles = 'bg-emerald-50 text-emerald-700 border-emerald-200 font-medium';
+      colorStyles = 'bg-green-50 text-green-700 border-green-200 font-medium';
       break;
     case 'EXCESS':
       colorStyles = 'bg-indigo-50 text-indigo-700 border-indigo-200 font-medium';
-      break;
-    case 'DEMO':
-      colorStyles = 'bg-orange-50 text-orange-700 border-orange-200 font-medium';
-      break;
-    case 'REAL':
-      colorStyles = 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium';
       break;
   }
 
