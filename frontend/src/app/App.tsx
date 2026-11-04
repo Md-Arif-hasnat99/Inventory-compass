@@ -37,7 +37,7 @@ const AppLayout: React.FC = () => {
   const currentTitle = routeTitles[location.pathname] || 'Inventory Compass';
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
       {/* Sidebar Navigation */}
       <AppSidebar
         collapsed={collapsed}

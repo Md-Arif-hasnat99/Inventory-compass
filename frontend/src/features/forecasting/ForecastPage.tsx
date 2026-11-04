@@ -5,7 +5,6 @@ import {
   ArrowDownRight,
   AlertCircle,
   Database,
-  Sparkles,
   RefreshCw,
   AlertTriangle,
 } from 'lucide-react';
@@ -168,7 +167,7 @@ export const ForecastPage: React.FC = () => {
     return {
       displayPoints: demoForecastPoints,
       displaySummary: demoSummary,
-      modelName: demoSummary?.modelUsed || 'Linear Regression (Best Champion)',
+      modelName: demoSummary?.modelUsed || 'Linear Regression',
       modelSource: 'demo',
       realMetrics: null,
     };
@@ -196,48 +195,50 @@ export const ForecastPage: React.FC = () => {
 
   return (
     <PageContainer
-      title="Demand Forecasting Intelligence"
+      title="Demand Forecasting"
       description="Clear forward-looking sales projections with uncertainty bands to guide inventory purchasing and shelf restocking."
     >
       {/* Mode Banner */}
       {isRealData && activeSession ? (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5">
-            <Database className="w-4 h-4 text-emerald-700 shrink-0" />
+            <Database className="w-4 h-4 text-blue-700 shrink-0" />
             <div>
-              <span className="font-bold text-emerald-900">Live Seller Data Active:</span>{' '}
-              <span className="text-emerald-800 font-medium">{activeSession.display_filename}</span>
-              <span className="text-emerald-700/80 ml-1.5">
+              <span className="font-bold text-blue-900">Live Seller Data Active:</span>{' '}
+              <span className="text-blue-800 font-medium">{activeSession.display_filename}</span>
+              <span className="text-blue-700/80 ml-1.5">
                 ({activeSession.row_count.toLocaleString()} rows · {activeForecast?.series_count || 1} series)
               </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold text-[11px]">
+            <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold text-[11px]">
               {modelSource === 'seller_trained'
                 ? 'Store Sales History'
                 : 'Standard Demand Engine'}
             </span>
             <Link
               to="/upload"
-              className="text-emerald-700 hover:text-emerald-900 font-semibold underline"
+              className="text-blue-700 hover:text-blue-900 font-semibold underline"
             >
               Change Dataset
             </Link>
           </div>
         </div>
       ) : (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5">
-            <Sparkles className="w-4 h-4 text-amber-700 shrink-0" />
-            <div className="text-amber-900">
-              <span className="font-bold">Demo Mode Active:</span> Showing synthetic store data for
+            <span className="w-4 h-4 rounded bg-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+              <span className="text-[10px]">📊</span>
+            </span>
+            <div className="text-slate-900">
+              <span className="font-bold">Demo Data Active:</span> Showing synthetic store data for
               demonstration.
             </div>
           </div>
           <Link
             to="/upload"
-            className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-md transition-colors shadow-xs"
+            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors shadow-xs"
           >
             Upload Real Shop CSV →
           </Link>
@@ -277,7 +278,7 @@ export const ForecastPage: React.FC = () => {
             <select
               value={selectedProduct}
               onChange={(e) => handleProductChange(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer min-w-56"
+              className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer min-w-56"
             >
               {isRealData && realProducts.length > 0
                 ? realProducts.map((p) => (
@@ -301,7 +302,7 @@ export const ForecastPage: React.FC = () => {
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer min-w-44"
+              className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-md text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer min-w-44"
             >
               <option value="ALL">All Stores / Aggregate</option>
               {isRealData && realStores.length > 0
@@ -331,7 +332,7 @@ export const ForecastPage: React.FC = () => {
                 onClick={() => setHorizon(h)}
                 className={`px-3 py-1 text-xs font-medium rounded transition-colors cursor-pointer ${
                   horizon === h
-                    ? 'bg-white text-emerald-800 font-semibold shadow-xs'
+                    ? 'bg-white text-blue-800 font-semibold shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -342,16 +343,16 @@ export const ForecastPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Forecast Intelligence & Metrics Summary Card */}
+      {/* Forecast Metrics Summary Card */}
       <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs px-2 py-0.5 rounded font-semibold bg-slate-100 text-slate-700">
               {selectedProduct}
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              AI Demand Intelligence Active
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+              Demand Forecasting Active
             </span>
           </div>
           <h2 className="text-lg font-bold text-slate-900 mt-1">
@@ -383,9 +384,9 @@ export const ForecastPage: React.FC = () => {
             </div>
             <div>
               <span className="block text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                Peak Day <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+                Peak Day <ArrowUpRight className="w-3 h-3 text-blue-600" />
               </span>
-              <span className="text-base font-bold text-emerald-700 tabular-nums">
+              <span className="text-base font-bold text-blue-700 tabular-nums">
                 {displaySummary.highestDay.demand} units
               </span>
               <span className="text-[10px] text-slate-400 block">
@@ -421,11 +422,11 @@ export const ForecastPage: React.FC = () => {
           </div>
           <div className="flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5 text-slate-600">
-              <span className="w-3 h-2 bg-emerald-100 border border-emerald-300 rounded-xs" />
+              <span className="w-3 h-2 bg-blue-100 border border-blue-300 rounded-xs" />
               <TermTooltip termKey="confidenceBounds" text="Confidence Range (±15%)" />
             </span>
-            <span className="flex items-center gap-1.5 text-emerald-800 font-medium">
-              <span className="w-3 h-0.5 bg-emerald-600 rounded" />
+            <span className="flex items-center gap-1.5 text-blue-800 font-medium">
+              <span className="w-3 h-0.5 bg-blue-600 rounded" />
               <TermTooltip termKey="dailyDemand" text="Expected Demand" />
             </span>
           </div>
@@ -434,7 +435,7 @@ export const ForecastPage: React.FC = () => {
         <div className="h-80 mt-4">
           {loading ? (
             <div className="h-full flex items-center justify-center text-slate-400 text-xs">
-              <RefreshCw className="w-5 h-5 animate-spin mr-2 text-emerald-600" />
+              <RefreshCw className="w-5 h-5 animate-spin mr-2 text-blue-600" />
               Generating recursive multi-step demand predictions...
             </div>
           ) : displayPoints.length === 0 ? (
@@ -446,7 +447,7 @@ export const ForecastPage: React.FC = () => {
                   ? 'A backend failure occurred while generating forecast predictions.'
                   : isRealData
                   ? 'No forecast points found for the selected product/store combination.'
-                  : 'Select an SKU or click to generate predictions.'}
+                  : 'Select an SKU to generate predictions.'}
               </p>
             </div>
           ) : (
@@ -476,7 +477,7 @@ export const ForecastPage: React.FC = () => {
                         <div className="bg-white border border-slate-200 rounded-md p-3 shadow-md text-xs">
                           <p className="font-semibold text-slate-800">{label}</p>
                           <div className="mt-1 space-y-1">
-                            <p className="text-emerald-700 font-bold text-sm">
+                            <p className="text-blue-700 font-bold text-sm">
                               Expected Demand: {pt.predictedDemand} units
                             </p>
                             <p className="text-slate-500 text-[11px]">
@@ -496,7 +497,7 @@ export const ForecastPage: React.FC = () => {
                   type="monotone"
                   dataKey="upperBound"
                   stroke="none"
-                  fill="#10b981"
+                  fill="#3b82f6"
                   fillOpacity={0.12}
                 />
                 <Area
@@ -509,9 +510,9 @@ export const ForecastPage: React.FC = () => {
                 <Line
                   type="monotone"
                   dataKey="predictedDemand"
-                  stroke="#059669"
+                  stroke="#2563eb"
                   strokeWidth={2.5}
-                  dot={{ r: 3.5, fill: '#059669' }}
+                  dot={{ r: 3.5, fill: '#2563eb' }}
                   activeDot={{ r: 6 }}
                 />
               </ComposedChart>
@@ -556,7 +557,7 @@ export const ForecastPage: React.FC = () => {
                   return (
                     <tr key={pt.date} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-4 py-2.5 font-medium text-slate-900">{pt.date}</td>
-                      <td className="px-3 py-2.5 text-right font-bold text-emerald-800 tabular-nums">
+                      <td className="px-3 py-2.5 text-right font-bold text-blue-800 tabular-nums">
                         {pt.predictedDemand}
                       </td>
                       <td className="px-3 py-2.5 text-right text-slate-600 tabular-nums">

@@ -12,7 +12,7 @@ interface KpiCardProps {
   };
   icon?: LucideIcon;
   badge?: string;
-  badgeVariant?: 'red' | 'amber' | 'emerald' | 'slate';
+  badgeVariant?: 'red' | 'amber' | 'blue' | 'slate';
   tooltip?: string;
 }
 
@@ -29,7 +29,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   const badgeClasses = {
     red: 'bg-red-50 text-red-700 border-red-200',
     amber: 'bg-amber-50 text-amber-700 border-amber-200',
-    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    blue: 'bg-blue-50 text-blue-700 border-blue-200',
     slate: 'bg-slate-100 text-slate-700 border-slate-200',
   }[badgeVariant];
 
@@ -66,7 +66,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
                 trend.isNeutral
                   ? 'text-slate-600'
                   : trend.isPositive
-                  ? 'text-emerald-700'
+                  ? 'text-blue-700'
                   : 'text-red-700'
               }`}
             >

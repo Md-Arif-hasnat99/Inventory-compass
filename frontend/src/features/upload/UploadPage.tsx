@@ -7,10 +7,10 @@ import {
   XCircle,
   AlertTriangle,
   ChevronRight,
-  RefreshCw,
   Table2,
   ArrowRight,
   Info,
+  RefreshCw,
 } from 'lucide-react';
 
 import { PageContainer } from '../../components/layout/PageContainer';
@@ -62,9 +62,9 @@ const StepBadge: React.FC<StepBadgeProps> = ({ number, label, active, done }) =>
     <div
       className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
         done
-          ? 'bg-emerald-600 text-white'
+          ? 'bg-blue-600 text-white'
           : active
-            ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-500'
+            ? 'bg-blue-50 text-blue-800 border-2 border-blue-500'
             : 'bg-slate-100 text-slate-400 border border-slate-200'
       }`}
     >
@@ -72,7 +72,7 @@ const StepBadge: React.FC<StepBadgeProps> = ({ number, label, active, done }) =>
     </div>
     <span
       className={`text-xs font-medium ${
-        active ? 'text-slate-900' : done ? 'text-emerald-700' : 'text-slate-400'
+        active ? 'text-slate-900' : done ? 'text-blue-700' : 'text-slate-400'
       }`}
     >
       {label}
@@ -248,12 +248,12 @@ export const UploadPage: React.FC = () => {
             onClick={() => fileInputRef.current?.click()}
             className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-16 cursor-pointer transition-all group ${
               dragOver
-                ? 'border-emerald-400 bg-emerald-50'
-                : 'border-slate-200 bg-slate-50 hover:border-emerald-300 hover:bg-emerald-50/40'
+                ? 'border-blue-400 bg-blue-50'
+                : 'border-slate-200 bg-slate-50 hover:border-blue-300 hover:bg-blue-50/40'
             }`}
           >
-            <div className="w-14 h-14 rounded-xl bg-emerald-100 flex items-center justify-center mb-4 group-hover:bg-emerald-200 transition-colors">
-              <Upload className="w-7 h-7 text-emerald-700" />
+            <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+              <Upload className="w-7 h-7 text-blue-700" />
             </div>
             <p className="text-sm font-semibold text-slate-800 mb-1">
               Drop your CSV file here, or click to browse
@@ -324,7 +324,7 @@ export const UploadPage: React.FC = () => {
       {/* ── Uploading spinner ── */}
       {step === 'uploading' && (
         <div className="bg-white rounded-lg border border-slate-200 shadow-xs p-12 flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin" />
+          <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin" />
           <p className="text-sm font-medium text-slate-700">Uploading and analysing your file…</p>
         </div>
       )}
@@ -334,8 +334,8 @@ export const UploadPage: React.FC = () => {
         <div className="space-y-4">
           {/* File summary */}
           <div className="bg-white rounded-lg border border-slate-200 shadow-xs p-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-emerald-700" />
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-blue-700" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-900 truncate">{session.display_filename}</p>
@@ -390,9 +390,9 @@ export const UploadPage: React.FC = () => {
                           [canonical]: e.target.value,
                         }))
                       }
-                      className={`flex-1 text-xs px-2.5 py-1.5 rounded-md border focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer ${
+                      className={`flex-1 text-xs px-2.5 py-1.5 rounded-md border focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer ${
                         currentHeader
-                          ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                          ? 'border-blue-200 bg-blue-50 text-blue-900'
                           : 'border-slate-200 bg-slate-50 text-slate-400'
                       }`}
                     >
@@ -404,7 +404,7 @@ export const UploadPage: React.FC = () => {
                       ))}
                     </select>
                     {isAutoDetected && currentHeader && (
-                      <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-semibold shrink-0">
+                      <span className="text-[10px] text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded font-semibold shrink-0">
                         auto
                       </span>
                     )}
@@ -481,7 +481,7 @@ export const UploadPage: React.FC = () => {
             <button
               onClick={handleValidate}
               disabled={step === 'validating'}
-              className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white text-xs font-semibold rounded-lg transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white text-xs font-semibold rounded-lg transition-colors"
             >
               {step === 'validating' ? (
                 <>
@@ -506,13 +506,13 @@ export const UploadPage: React.FC = () => {
           <div
             className={`rounded-xl p-5 flex items-start gap-4 ${
               session.status === 'valid'
-                ? 'bg-emerald-900 text-white'
+                ? 'bg-blue-900 text-white'
                 : 'bg-red-900 text-white'
             }`}
           >
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
               {session.status === 'valid' ? (
-                <CheckCircle2 className="w-6 h-6 text-emerald-300" />
+                <CheckCircle2 className="w-6 h-6 text-blue-300" />
               ) : (
                 <XCircle className="w-6 h-6 text-red-300" />
               )}
@@ -615,7 +615,7 @@ export const UploadPage: React.FC = () => {
               </button>
               {session.status === 'valid' && (
                 <button
-                  className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
                   onClick={async () => {
                     setActiveUploadId(session.upload_id);
                     await loadForecast(7);
