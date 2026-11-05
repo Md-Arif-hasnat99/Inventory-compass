@@ -95,6 +95,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
+
+        {/* Bottom status — demo indicator only, no fake "System Online" pulse */}
+        {!collapsed && (
+          <div className="p-3 border-t border-[#e1e6e1]">
+            <div className="px-2.5 py-2 rounded-md bg-[#f7f8f6] border border-[#e1e6e1]">
+              <span className="block text-[11px] font-medium text-[#68716b]">Demo mode</span>
+              <span className="block text-[10px] text-[#68716b] mt-0.5">Sample data loaded</span>
+            </div>
+          </div>
+        )}
       </aside>
     </>
   );

@@ -226,6 +226,17 @@ def validate_upload_session(upload_id: str, body: Optional[ColumnMappingRequest]
     }
 
 
+@app.delete("/api/upload/{upload_id}", status_code=204)
+def delete_upload_session(upload_id: str):
+    """Delete an upload session and its temporary file."""
+    deleted = upload_store.delete_session(upload_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Upload session '{upload_id}' not found.",
+        )
+
+
 # ---------------------------------------------------------------------------
 # Seller Forecasting Endpoints
 # ---------------------------------------------------------------------------

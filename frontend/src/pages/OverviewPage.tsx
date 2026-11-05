@@ -11,15 +11,7 @@ import type {
   SalesDemandTrendPoint,
 } from '../types/dashboard';
 import type { InventoryItem } from '../types/inventory';
-import {
-  PageHeader,
-  SectionHeader,
-  Surface,
-  DataTable,
-  EmptyState,
-  LoadingState,
-  ErrorState,
-} from '../components/ui';
+import { PageHeader, SectionHeader, DataTable, LoadingState, ErrorState } from '../components/ui';
 import { Badge, RiskBadge } from '../components/ui/Badge';
 import { DemandChart } from '../components/charts/DemandChart';
 

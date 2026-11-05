@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { LandingPage } from '../pages/LandingPage';
@@ -9,15 +9,16 @@ import { ForecastPage } from '../pages/ForecastPage';
 import { ReplenishmentPage } from '../pages/ReplenishmentPage';
 import { ProductsPage } from '../features/products/ProductsPage';
 import { InventoryGuidePage } from '../features/guide/InventoryGuidePage';
-import { SettingsPage, NotFoundPage } from '../pages/SettingsPage';
+import { SettingsPage } from '../pages/SettingsPage';
+import { TermsPage } from '../pages/TermsPage';
 import { AppProviders } from './providers';
+import { SeoSync } from './SeoSync';
 
 export const App: React.FC = () => {
-  const [selectedStore, setSelectedStore] = useState('ALL');
-
   return (
     <AppProviders>
       <BrowserRouter>
+        <SeoSync />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route
@@ -42,6 +43,7 @@ export const App: React.FC = () => {
           <Route path="/forecast" element={<Navigate to="/workspace/forecasts" replace />} />
           <Route path="/upload" element={<Navigate to="/workspace/upload" replace />} />
           <Route path="/settings" element={<Navigate to="/workspace/settings" replace />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

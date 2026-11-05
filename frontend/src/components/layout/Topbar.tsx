@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Icon } from '../ui/icons';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 interface TopbarProps {
   onOpenMobileSidebar: () => void;
@@ -14,6 +13,28 @@ interface TopbarProps {
   onClearDataset?: () => void;
 }
 
+const PAGE_LABELS: Record<string, string> = {
+  '/workspace':              'Overview',
+  '/workspace/overview':     'Overview',
+  '/workspace/upload':       'Data upload',
+  '/workspace/forecasts':    'Demand forecast',
+  '/workspace/inventory':    'Inventory',
+  '/workspace/replenishment':'Replenishment',
+  '/workspace/products':     'Products',
+  '/workspace/guide':        'Terms & Guide',
+  '/workspace/settings':     'Settings',
+};
+
+function getPageTitle(pathname: string): string {
+  return PAGE_LABELS[pathname] ?? 'Workspace';
+}
+
+const STATUS_STYLES = {
+  valid:   { dot: 'bg-[#287a50]', text: 'text-[#287a50]' },
+  invalid: { dot: 'bg-[#b54747]', text: 'text-[#b54747]' },
+  pending: { dot: 'bg-[#a86b16]', text: 'text-[#a86b16]' },
+};
+
 export const Topbar: React.FC<TopbarProps> = ({
   onOpenMobileSidebar,
   title,
@@ -22,99 +43,66 @@ export const Topbar: React.FC<TopbarProps> = ({
   onClearDataset,
 }) => {
   const location = useLocation();
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
-  const breadcrumbs = getBreadcrumbs(location.pathname);
+  const pageTitle = getPageTitle(location.pathname);
+  const isDemo = !selectedDataset || selectedDataset.status !== 'valid';
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-white border-b border-[#e1e6e1] px-4 sm:px-6 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 h-13 bg-white border-b border-[#e1e6e1] px-4 sm:px-6 flex items-center justify-between gap-4" style={{ height: '52px' }}>
+      {/* Left: mobile trigger + page title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onOpenMobileSidebar}
           className="lg:hidden p-1.5 rounded-md text-[#68716b] hover:text-[#202522] hover:bg-[#f1f3f0] transition-colors"
           aria-label="Open navigation"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="4" y1="12" x2="20" y2="12" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <line x1="4" y1="8"  x2="20" y2="8"  />
+            <line x1="4" y1="16" x2="20" y2="16" />
           </svg>
         </button>
 
-        <div className="hidden lg:flex flex-col gap-0.5">
-          <h1 className="text-sm font-semibold text-[#202522]">{title}</h1>
-          {breadcrumbs.length > 0 && (
-            <span className="text-[10px] text-[#68716b] uppercase tracking-wider">
-              {breadcrumbs.join(' › ')}
-            </span>
-          )}
+        <div className="min-w-0">
+          <span className="block text-sm font-semibold text-[#202522] truncate">{pageTitle}</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {selectedDataset && (
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#e1e6e1] bg-[#f1f3f0] text-xs">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <span className={`font-medium ${selectedDataset.status === 'valid' ? 'text-[#287a50]' : selectedDataset.status === 'invalid' ? 'text-[#b54747]' : 'text-[#a86b16]'}`}>
-              {selectedDataset.name}
-            </span>
+      {/* Right: data source status + optional actions */}
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Dataset pill — always visible, toggles between demo and real */}
+        {selectedDataset ? (
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs ${
+            STATUS_STYLES[selectedDataset.status].text
+          } border-current/20 bg-current/5`}
+            style={{ borderColor: 'currentColor', backgroundColor: 'transparent' }}
+          >
+            {/* inner bg via inline because Tailwind doesn't do dynamic opacity on CSS vars easily */}
+            <span className={`w-1.5 h-1.5 rounded-full ${STATUS_STYLES[selectedDataset.status].dot} shrink-0`}/>
+            <span className="font-medium max-w-[160px] truncate hidden sm:block">{selectedDataset.name}</span>
+            <span className="font-medium sm:hidden">Dataset</span>
             <button
               onClick={onClearDataset}
-              className="ml-2 p-1 text-[#68716b] hover:text-[#b54747] hover:bg-[#fbf3f3] rounded-sm transition-colors"
+              className="ml-1 opacity-60 hover:opacity-100 transition-opacity"
               title="Clear dataset"
               aria-label="Clear dataset"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
           </div>
+        ) : (
+          /* Demo mode pill */
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#e1e6e1] bg-[#f7f8f6] text-[11px] font-medium text-[#68716b]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2f6b4f] shrink-0"/>
+            Demo data
+          </span>
         )}
 
         {actions}
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#e1e6e1] text-[#68716b] hover:text-[#202522] hover:bg-[#f1f3f0] transition-colors"
-            aria-label="User menu"
-            aria-expanded={isUserMenuOpen}
-          >
-            <span className="hidden sm:inline text-xs">Account</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="5" r="2" />
-              <path d="M7 21a5.79 5.79 0 0 0 4.95 2h5.1a5.79 5.79 0 0 0 4.95-2h0a1 1 0 0 1 0-2h0a5.79 5.79 0 0 0-4.95-2h-5.1a5.79 5.79 0 0 0-4.95 2h0a1 1 0 0 1 0 2z" />
-            </svg>
-          </button>
-        </div>
       </div>
     </header>
   );
 };
 
-function getBreadcrumbs(pathname: string): string[] {
-  const labels: Record<string, string> = {
-    '/workspace': 'Overview',
-    '/workspace/upload': 'Data upload',
-    '/workspace/forecasts': 'Forecasts',
-    '/workspace/inventory': 'Inventory',
-    '/workspace/replenishment': 'Replenishment',
-    '/workspace/evaluation': 'Model evaluation',
-    '/workspace/settings': 'Settings',
-  };
-
-  const parts = pathname.split('/').filter(Boolean);
-  const labelsList: string[] = [];
-
-  for (let i = 0; i < parts.length; i++) {
-    const path = '/' + parts.slice(0, i + 1).join('/');
-    if (labels[path]) labelsList.push(labels[path]);
-    else if (parts[i]) labelsList.push(parts[i]);
-  }
-
-  return labelsList;
-}
+export default Topbar;

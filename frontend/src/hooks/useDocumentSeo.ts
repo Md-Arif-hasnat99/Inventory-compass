@@ -10,64 +10,71 @@ interface SeoConfig {
 
 const ROUTE_SEO: Record<string, SeoConfig> = {
   '/': {
-    title: 'Overview Dashboard — Inventory Compass',
-    description: 'Monitor real-time retail demand trajectory, critical stockout risk alerts, and operational inventory health across stores.',
-    keywords: 'retail dashboard, inventory metrics, stockout alerts, retail demand overview',
+    title: 'Inventory Compass — Retail Inventory Planning',
+    description:
+      'Retail demand forecasting and replenishment planning. Review sales history, forecast product demand, and calculate replenishment needs from one clear workspace.',
+    keywords: 'retail inventory, demand forecasting, replenishment planning, reorder point, safety stock',
   },
-  '/dashboard': {
-    title: 'Overview Dashboard — Inventory Compass',
-    description: 'Monitor real-time retail demand trajectory, critical stockout risk alerts, and operational inventory health across stores.',
-    keywords: 'retail dashboard, inventory metrics, stockout alerts, retail demand overview',
+  '/workspace/overview': {
+    title: 'Overview | Inventory Compass',
+    description:
+      'Monitor demand trajectory, critical stockout risk alerts, and operational inventory health across stores from a single overview.',
   },
-  '/upload': {
-    title: 'Upload Data — Inventory Compass',
-    description: 'Upload your retail transaction CSV to automatically generate demand forecasts, calculate reorder points, and optimize safety stock.',
-    keywords: 'retail CSV upload, sales history upload, inventory data ingestion',
+  '/workspace/upload': {
+    title: 'Upload Sales Data | Inventory Compass',
+    description:
+      'Upload your retail sales history CSV to generate demand forecasts, calculate reorder points, and plan replenishment.',
   },
-  '/forecast': {
-    title: 'Demand Forecasting Intelligence — Inventory Compass',
-    description: 'Multi-horizon predictive demand projections with uncertainty confidence bounds, daily sales velocity, and seasonal peak detection.',
-    keywords: 'demand forecasting, sales projection, predictive inventory, forecast horizon, retail forecasting',
+  '/workspace/forecasts': {
+    title: 'Demand Forecasts | Inventory Compass',
+    description:
+      'Multi-horizon predictive demand projections with historical context and replenishment-focused planning.',
   },
-  '/inventory': {
-    title: 'Inventory Management & Stock Health — Inventory Compass',
-    description: 'Track SKU stock levels, supplier lead times, reorder thresholds, and days of supply coverage across all retail locations.',
-    keywords: 'inventory management, stock monitoring, days of supply, SKU tracking, safety buffer',
+  '/workspace/inventory': {
+    title: 'Replenishment | Inventory Compass',
+    description:
+      'Automated purchase order recommendations based on lead-time demand, safety buffers, and stockout risk tiers.',
   },
-  '/inventory/replenishment': {
-    title: 'Replenishment Actions & Purchase Planning — Inventory Compass',
-    description: 'Automated purchase order recommendations based on lead-time demand, safety buffers, and stockout risk tiers. Export PO drafts to CSV.',
-    keywords: 'inventory replenishment, purchase order recommendations, reorder point calculation, PO draft export',
+  '/workspace/replenishment': {
+    title: 'Replenishment | Inventory Compass',
+    description:
+      'Automated purchase order recommendations based on lead-time demand, safety buffers, and stockout risk tiers.',
   },
-  '/products': {
-    title: 'Products Catalog — Inventory Compass',
-    description: 'Comprehensive retail catalog with historical velocity, unit prices, holding cost ratios, and replenishment lead times.',
-    keywords: 'product catalog, retail SKUs, merchandise inventory, product velocity',
+  '/workspace/products': {
+    title: 'Products | Inventory Compass',
+    description:
+      'Retailer product catalog with historical velocity, replenishment lead times, and stock coverage context.',
   },
-  '/guide': {
-    title: 'Terms & Inventory Clarifications Guide — Inventory Compass',
-    description: 'Plain-English guide to inventory terminology: Reorder Points (ROP), Safety Stock, EOQ, Lead Times, and interactive ROP simulator.',
-    keywords: 'inventory glossary, reorder point formula, safety stock definition, EOQ guide, retail terms',
+  '/workspace/guide': {
+    title: 'Inventory Guide | Inventory Compass',
+    description:
+      'Plain-English guide to inventory terminology: reorder points, safety stock, lead times, and demand planning.',
   },
-  '/settings': {
-    title: 'System Settings — Inventory Compass',
-    description: 'Configure store parameters, supplier defaults, service level targets, and forecasting horizons.',
+  '/workspace/settings': {
+    title: 'Settings | Inventory Compass',
+    description: 'Configure forecasting horizons, service level targets, and display preferences.',
   },
+  '/workspace/terms': {
+    title: 'Terms & Conditions | Inventory Compass',
+    description:
+      'Terms and conditions for using Inventory Compass, including forecast accuracy limits and user responsibilities.',
+  },
+};
+
+const DEFAULT_SEO: SeoConfig = {
+  title: 'Inventory Compass — Retail Inventory Planning',
+  description:
+    'Retail demand forecasting and replenishment planning. Review sales history, forecast product demand, and calculate replenishment needs from one clear workspace.',
 };
 
 export function useDocumentSeo() {
   const location = useLocation();
 
   useEffect(() => {
-    const config = ROUTE_SEO[location.pathname] || {
-      title: 'Inventory Compass — Navigate Demand. Optimize Inventory.',
-      description: 'Retail demand forecasting and automated replenishment planning for data-driven inventory decisions.',
-    };
+    const config = ROUTE_SEO[location.pathname] || DEFAULT_SEO;
 
-    // Update document title
     document.title = config.title;
 
-    // Helper to update or create meta tags
     const updateMeta = (name: string, content: string, isProperty = false) => {
       const attribute = isProperty ? 'property' : 'name';
       let element = document.querySelector(`meta[${attribute}="${name}"]`);
@@ -79,23 +86,19 @@ export function useDocumentSeo() {
       element.setAttribute('content', content);
     };
 
-    // Update standard SEO meta tags
     updateMeta('description', config.description);
     if (config.keywords) {
       updateMeta('keywords', config.keywords);
     }
 
-    // Update OpenGraph tags
     updateMeta('og:title', config.title, true);
     updateMeta('og:description', config.description, true);
     updateMeta('og:url', window.location.href, true);
     updateMeta('og:type', config.ogType || 'website', true);
 
-    // Update Twitter Card tags
     updateMeta('twitter:title', config.title);
     updateMeta('twitter:description', config.description);
 
-    // Update canonical link
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
       canonical = document.createElement('link');
