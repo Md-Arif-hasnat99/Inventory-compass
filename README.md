@@ -274,11 +274,11 @@ $$
 $$
 
 $$
-\text{roll\_mean}_w(i,t) = \frac{1}{w} \sum_{j=1}^{w} y_{i,t-j}, \qquad w \in \{7, 14, 30\}
+\text{roll-mean}_w(i,t) = \frac{1}{w} \sum_{j=1}^{w} y_{i,t-j}, \qquad w \in \{7, 14, 30\}
 $$
 
 $$
-\text{roll\_std}_7(i,t) = \sqrt{\frac{1}{6} \sum_{j=1}^{7} \left(y_{i,t-j} - \text{roll\_mean}_7(i,t)\right)^2}
+\text{roll-std}_7(i,t) = \sqrt{\frac{1}{6} \sum_{j=1}^{7} \left(y_{i,t-j} - \text{roll-mean}_7(i,t)\right)^2}
 $$
 
 Categorical fields (store, product, category, region, weather, seasonality) are label-encoded. Unseen categories in inference are mapped to $-1$ rather than silently coerced to class $0$.
